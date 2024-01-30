@@ -9,6 +9,7 @@ class GourmetApp(ft.UserControl):
         self.new_meal = ft.TextField(hint_text="Was hast du noch in der Vorratskammer?", expand=True)
         self.meals = ft.Column()
 
+        # application's root control (i.e. "view") containing all other controls
         return ft.Column(
             width=600,
             controls=[
@@ -105,8 +106,23 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.update()
 
+    page.navigation_bar = ft.NavigationBar(
+        destinations=[
+            ft.NavigationDestination(icon=ft.icons.EXPLORE, label="Entdecken"),
+            ft.NavigationDestination(icon=ft.icons.ADD_BOX, label="Eigene Rezepte"),
+            ft.NavigationDestination(
+                icon=ft.icons.BOOKMARK_BORDER,
+                selected_icon=ft.icons.BOOKMARK,
+                label="Gespeicherte Rezepte",
+            ),
+        ]
+    )
+    
+
+    # create application instance
     meal = GourmetApp()
 
+    # add application's root control to the page
     page.add(meal)
-
+    
 ft.app(target=main)

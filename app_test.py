@@ -13,6 +13,7 @@ class GourmetApp(ft.UserControl):
         return ft.Column(
             width=600,
             controls=[
+                ft.Row([ ft.Text(value="Lebensmittel", style="headlineMedium")], alignment=ft.MainAxisAlignment.CENTER),
                 ft.Row(
                     controls=[
                         self.new_meal,
@@ -105,10 +106,23 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.update()
 
+    page.navigation_bar = ft.NavigationBar(
+        destinations=[
+            ft.NavigationDestination(icon=ft.icons.EXPLORE, label="Entdecken"),
+            ft.NavigationDestination(icon=ft.icons.ADD_BOX, label="Eigene Rezepte"),
+            ft.NavigationDestination(
+                icon=ft.icons.BOOKMARK_BORDER,
+                selected_icon=ft.icons.BOOKMARK,
+                label="Gespeicherte Rezepte",
+            ),
+        ]
+    )
+    
+
     # create application instance
     meal = GourmetApp()
 
     # add application's root control to the page
     page.add(meal)
-
+    
 ft.app(target=main)
