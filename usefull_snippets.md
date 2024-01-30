@@ -1,6 +1,7 @@
-#flet.app(target=main, view=flet.WEB_BROWSER)
+# damit kann man die App im Browser öffnen
+flet.app(target=main, view=flet.WEB_BROWSER)
 
-
+# unterschiedliche Dinge (Eingabefelder & Plus/Minusbutton)
 def main(page: ft.Page):
     page.title = "Gourmet Guide"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
@@ -41,4 +42,40 @@ def main(page: ft.Page):
             ],
             alignment=ft.MainAxisAlignment.CENTER,
         )
+    )
+
+# Dictionary für eine Datenbank
+
+def main(page: ft.Page):
+    page.add(
+        ft.DataTable(
+            columns=[
+                ft.DataColumn(ft.Text("Eier")),
+                ft.DataColumn(ft.Text("Butter")),
+                ft.DataColumn(ft.Text("Mehl")),
+            ],
+            rows:[
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text("2")),
+                        ft.DataCell(ft.Text("100g")),
+                        ft.DataCell(ft.Text("250g")),
+                    ],
+                ),
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text("4")),
+                        ft.DataCell(ft.Text("500g")),
+                        ft.DataCell(ft.Text("500g")),
+                    ],
+                ),
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text("2")),
+                        ft.DataCell(ft.Text("100g")),
+                        ft.DataCell(ft.Text("250g")),
+                    ],
+                ),
+            ],
+        ),      
     )
