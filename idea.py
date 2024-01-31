@@ -1,3 +1,4 @@
+# unterschiedliche Ideen, die wir noch benutzen könnten
 import flet as ft
 
 def main(page: ft.Page):
