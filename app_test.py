@@ -9,7 +9,6 @@ class GourmetApp(ft.UserControl):
         self.new_meal = ft.TextField(hint_text="Was hast du noch in der Vorratskammer?", expand=True)
         self.meals = ft.Column()
 
-        # application's root control (i.e. "view") containing all other controls
         return ft.Column(
             width=600,
             controls=[
@@ -118,11 +117,7 @@ def main(page: ft.Page):
         ]
     )
     
-
-    # create application instance
     meal = GourmetApp()
-
-    # add application's root control to the page
     page.add(meal)
     
 ft.app(target=main)

@@ -1,15 +1,21 @@
+# Imports die man braucht
 from typing import Any, List, Optional, Union
 import flet as ft
 from flet_core.control import Control, OptionalNumber
 from flet_core.ref import Ref
 from flet_core.types import AnimationValue, ClipBehavior, OffsetValue, ResponsiveNumber, RotateValue, ScaleValue
 
+# Klasse GourmetApp ist schon direkt sichtbar auf Mainpage
 class GourmetApp(ft.UserControl):
+
+    # Funktion, die in Abhängigkeit von "self" agiert
     def build(self):
+
+        #Zuerst das Eingabefeld mit Hinweistext
         self.new_meal = ft.TextField(hint_text="Was hast du noch in der Vorratskammer?", expand=True)
         self.meals = ft.Column()
 
-        # application's root control (i.e. "view") containing all other controls
+        # Überschrift Lebensmittel und der Add-Button rechts vom Eingabefeld
         return ft.Column(
             width=600,
             controls=[
@@ -23,7 +29,8 @@ class GourmetApp(ft.UserControl):
                 self.meals,
             ],
         )
-
+    
+    # Die Funktion wenn der Add-Button geklickt wird, ruft auch die Klasse "Meal" auf
     def add_clicked(self, e):
         meal = Meal(self.new_meal.value, self.meal_delete)
         self.meals.controls.append(meal)
@@ -35,13 +42,16 @@ class GourmetApp(ft.UserControl):
         self.update()
 
 
-
+# Klasse "Meal" mit weiteren Benutzerkontrollmöglichkeiten, um die Lebensmittel zu bearbeiten
 class Meal(ft.UserControl):
+
+    # Initialisierung und Übergabe von Variablen
     def __init__(self, meal_name, meal_delete):
         super().__init__()
         self.meal_name = meal_name
         self.meal_delete = meal_delete
 
+    # Hinzugefügte Lebensmittel werden aufgebaut/angezeigt (Checkbox und danben Textfeld)
     def build(self):
         self.display_meal = ft.Checkbox(value=False, label=self.meal_name)
         self.edit_name = ft.TextField(expand=1)
@@ -49,6 +59,8 @@ class Meal(ft.UserControl):
         self.display_view = ft.Row(
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
+
+            # Kontrollmöglichkeiten für die Lebensmittel mit Icon und Text (=Iconbutton)
             controls=[
                 self.display_meal,
                 ft.Row(
@@ -69,6 +81,7 @@ class Meal(ft.UserControl):
             ],
         )
 
+        # Iconbutton zum Bestätigen der Veränderungen ist am Anfang nicht sichtbar
         self.edit_view = ft.Row(
             visible=False,
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
@@ -85,6 +98,7 @@ class Meal(ft.UserControl):
         )
         return ft.Column(controls=[self.display_view, self.edit_view])
 
+    # Logik dahinter wenn man die unterschiedlichen Buttons benutzt, werden auch direkt von den Buttons aufgerufen
     def edit_clicked(self, e):
         self.edit_name.value = self.display_meal.label
         self.display_view.visible = False
@@ -100,12 +114,13 @@ class Meal(ft.UserControl):
     def delete_clicked(self, e):
         self.meal_delete(self)
 
-
+# Mainpage wird definiert: Titel, Ausrichtung, Navigationsbuttons
 def main(page: ft.Page):
     page.title = "Gourmet Guide"
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.update()
 
+    #Die Buttons machen bisher noch nichts
     page.navigation_bar = ft.NavigationBar(
         destinations=[
             ft.NavigationDestination(icon=ft.icons.EXPLORE, label="Entdecken"),
@@ -117,12 +132,9 @@ def main(page: ft.Page):
             ),
         ]
     )
-    
 
-    # create application instance
+    # Klasse GourmetAPP wird zu der Mainpage hinzugefügt durch Variable "meal" (man könnte noch mehr von der Mainpage in die Klasse schreiben)
     meal = GourmetApp()
-
-    # add application's root control to the page
     page.add(meal)
     
 ft.app(target=main)
