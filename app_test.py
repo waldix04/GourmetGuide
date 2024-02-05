@@ -100,8 +100,9 @@ class Meal(ft.UserControl):
         self.meal_delete(self)
 
 
-def main(page: ft.Page):
+def main(page: ft.Page):   
     page.title = "Gourmet Guide"
+    page.theme_mode = ft.ThemeMode.LIGHT
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.update()
 

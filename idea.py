@@ -44,3 +44,9 @@ def main(page: ft.Page):
     )
 
 ft.app(target=main)
+
+
+#page.appbar = ft.AppBar(
+        #title=ft.Text("Gourmet Guide"),
+        #center_title=True,
+        #bgcolor=ft.colors.BLACK)
