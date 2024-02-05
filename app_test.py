@@ -102,7 +102,7 @@ class Meal(ft.UserControl):
 
 def main(page: ft.Page):   
     page.title = "Gourmet Guide"
-    page.theme_mode = ft.ThemeMode.LIGHT
+    page.theme_mode = ft.ThemeMode.DARK
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.update()
 
