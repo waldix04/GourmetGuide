@@ -33,8 +33,6 @@ class GourmetApp(ft.UserControl):
         self.meals.controls.remove(meal)
         self.update()
 
-
-
 class Meal(ft.UserControl):
     def __init__(self, meal_name, meal_delete):
         super().__init__()
@@ -104,21 +102,33 @@ def main(page: ft.Page):
     page.title = "Gourmet Guide"
     page.theme_mode = ft.ThemeMode.DARK
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.update()
 
     page.navigation_bar = ft.NavigationBar(
         destinations=[
             ft.NavigationDestination(icon=ft.icons.EXPLORE, label="Entdecken"),
             ft.NavigationDestination(icon=ft.icons.ADD_BOX, label="Eigene Rezepte"),
-            ft.NavigationDestination(
-                icon=ft.icons.BOOKMARK_BORDER,
-                selected_icon=ft.icons.BOOKMARK,
-                label="Gespeicherte Rezepte",
-            ),
+            ft.NavigationDestination(icon=ft.icons.BOOKMARK_BORDER, selected_icon=ft.icons.BOOKMARK, label="Gespeicherte Rezepte"),
         ]
     )
-    
     meal = GourmetApp()
     page.add(meal)
+
+    #Die Bilder können wir auch statt dessen wo anders hinpacken
+    images = ft.Row(expand=1, wrap=False, scroll="always", alignment=ft.MainAxisAlignment.END)
+
+    page.add(images)
+    for i in range(1,11):
+        images.controls.append(
+            ft.Image(
+                src= f"pictures/img{i}.jpeg",
+                width=150,
+                height=150,
+                fit=ft.ImageFit.NONE,
+                repeat=ft.ImageRepeat.NO_REPEAT,
+                border_radius=ft.border_radius.all(10),
+            )
+        )
+    page.update()
     
+
 ft.app(target=main)
