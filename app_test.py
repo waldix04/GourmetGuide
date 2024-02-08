@@ -4,6 +4,8 @@ from flet_core.control import Control, OptionalNumber
 from flet_core.ref import Ref
 from flet_core.types import AnimationValue, ClipBehavior, OffsetValue, ResponsiveNumber, RotateValue, ScaleValue
 
+# Das ist der Header mit Eingabe vom User
+
 class GourmetApp(ft.UserControl):
     def build(self):
         self.new_meal = ft.TextField(hint_text="Was hast du noch in der Vorratskammer?", expand=True)
@@ -97,14 +99,18 @@ class Meal(ft.UserControl):
     def delete_clicked(self, e):
         self.meal_delete(self)
 
-
+# Titel der App oben links 
+        
 def main(page: ft.Page):   
     page.title = "Gourmet Guide"
     page.theme_mode = ft.ThemeMode.DARK
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
+# Icons unten
+    
     page.navigation_bar = ft.NavigationBar(
         destinations=[
+            ft.NavigationDestination(icon=ft.icons.HOME, label="Home"),
             ft.NavigationDestination(icon=ft.icons.EXPLORE, label="Entdecken"),
             ft.NavigationDestination(icon=ft.icons.ADD_BOX, label="Eigene Rezepte"),
             ft.NavigationDestination(icon=ft.icons.BOOKMARK_BORDER, selected_icon=ft.icons.BOOKMARK, label="Gespeicherte Rezepte"),
@@ -113,7 +119,11 @@ def main(page: ft.Page):
     meal = GourmetApp()
     page.add(meal)
 
+
+
     #Die Bilder können wir auch statt dessen wo anders hinpacken
+
+
     images = ft.Row(expand=1, wrap=False, scroll="always", alignment=ft.MainAxisAlignment.END)
 
     page.add(images)
