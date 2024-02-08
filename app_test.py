@@ -3,6 +3,9 @@ import flet as ft
 from flet_core.control import Control, OptionalNumber
 from flet_core.ref import Ref
 from flet_core.types import AnimationValue, ClipBehavior, OffsetValue, ResponsiveNumber, RotateValue, ScaleValue
+# Waldi testes hier importe um auf andere seiten zu kommmen!
+from flet import RouteChangeEvent,ViewPopEvent,CrossAxisAlignment,MainAxisAlignment
+from flet import View,Page,AppBar,ElevatedButton,Text
 
 # Das ist der Header mit Eingabe vom User
 
@@ -100,11 +103,27 @@ class Meal(ft.UserControl):
         self.meal_delete(self)
 
 # Titel der App oben links 
-        
+        #Homepage
 def main(page: ft.Page):   
     page.title = "Gourmet Guide"
     page.theme_mode = ft.ThemeMode.DARK
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+
+    '''Hier versuche ich ,das wenn man auf einen icon klickt das er die "Seite" wechselt. 
+    def route_change(e: RouteChangeEvent) -> None:
+        page.views.clear()
+
+        page.views.append(
+            View(
+                route='/',
+                controls=[Appbar(title=Text('Entdecken'),bgcolor='Black'),
+                Text(value='Entdecken',size=30),
+                ElevatedButton(text='Go to Entdecken', on_click=lambda _: page.go('/Entdecken'))
+                ],
+            )
+        )
+'''
+
 
 # Icons unten
     
@@ -142,3 +161,10 @@ def main(page: ft.Page):
     
 
 ft.app(target=main)
+
+# Versuch die Icons auf andere seiten zu bringen (Verlinkung)
+#def Entdecken(page: ft.Page):   
+#    page.title = "Entdecken"
+#    page.theme_mode = ft.ThemeMode.DARK
+#    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+
