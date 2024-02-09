@@ -7,6 +7,7 @@ from flet_core.types import AnimationValue, ClipBehavior, OffsetValue, Responsiv
 from flet import RouteChangeEvent,ViewPopEvent,CrossAxisAlignment,MainAxisAlignment
 from flet import View,Page,AppBar,ElevatedButton,Text
 
+
 # Das ist der Header mit Eingabe vom User
 
 class GourmetApp(ft.UserControl):
@@ -22,8 +23,10 @@ class GourmetApp(ft.UserControl):
                     controls=[
                         self.new_meal,
                         ft.FloatingActionButton(icon=ft.icons.ADD, on_click=self.add_clicked),
+                        #Noah Suchbutton
+                        ft.FloatingActionButton(icon=ft.icons.SEARCH, on_click=self.search_clicked),
                     ],
-                ),
+                ),               
                 self.meals,
             ],
         )
@@ -37,6 +40,48 @@ class GourmetApp(ft.UserControl):
     def meal_delete(self, meal):
         self.meals.controls.remove(meal)
         self.update()
+    
+    #Noah Suchfunktion
+    def search_clicked(self, e):  # Klickereignis für die Suchfunktion
+        eingegebene_zutaten = self.new_meal.value.split(",")  # Annahme: Eingegebene Zutaten werden durch Kommas getrennt
+        gefundenen_gerichte = self.suche_nach_gerichten(eingegebene_zutaten, gerichte)
+        # Hier kannst du die gefundenen Gerichte weiter verarbeiten, z.B. anzeigen
+        print("Gefundene Gerichte:")
+        for gericht in gefundenen_gerichte:
+            print(f"{gericht['name']}:")
+            for zutat, menge in gericht['zutaten']:
+                print(f"- {zutat}: {menge}")
+
+    def suche_nach_gerichten(self, nach_zutaten, gerichte):
+        gefundenen_gerichte = []
+        for gericht in gerichte:
+            if all(zutat.lower() in [z[0].lower() for z in gericht['zutaten']] for zutat in nach_zutaten):
+                gefundenen_gerichte.append(gericht)
+        return gefundenen_gerichte
+    
+#Noah Datenbank als Liste:
+
+gerichte = [
+    {
+        'name': 'Spaghetti Carbonara',
+        'beschreibung': 'Nudeln mit Speck, Ei und Parmesan in Sahnesauce',
+        'preis': 9.99,
+        'zutaten': [('Nudeln', '200g'), ('Speck', '100g'), ('Ei', '2 Stück'), ('Parmesan', '50g'), ('Sahne', '100ml')]
+    },
+    {
+        'name': 'Gegrilltes Hähnchen',
+        'beschreibung': 'Saftiges Hähnchenbrustfilet vom Grill mit Gemüsebeilage',
+        'preis': 12.50,
+        'zutaten': [('Hähnchenbrustfilet', '300g'), ('Gemüse', '200g'), ('Gewürze', 'nach Geschmack')]
+    },
+    {
+        'name': 'Vegetarische Pizza',
+        'beschreibung': 'Pizza mit Tomatensauce, Mozzarella und verschiedenen Gemüsesorten',
+        'preis': 8.99,
+        'zutaten': [('Teig', '300g'), ('Tomatensauce', '150ml'), ('Mozzarella', '200g'), ('Gemüse', '150g')]
+    }
+]
+
 
 class Meal(ft.UserControl):
     def __init__(self, meal_name, meal_delete):
@@ -135,14 +180,11 @@ def main(page: ft.Page):
             ft.NavigationDestination(icon=ft.icons.BOOKMARK_BORDER, selected_icon=ft.icons.BOOKMARK, label="Gespeicherte Rezepte"),
         ]
     )
+   
     meal = GourmetApp()
     page.add(meal)
 
-
-
     #Die Bilder können wir auch statt dessen wo anders hinpacken
-
-
     images = ft.Row(expand=1, wrap=False, scroll="always", alignment=ft.MainAxisAlignment.END)
 
     page.add(images)
@@ -158,7 +200,6 @@ def main(page: ft.Page):
             )
         )
     page.update()
-    
 
 ft.app(target=main)
 
@@ -167,4 +208,5 @@ ft.app(target=main)
 #    page.title = "Entdecken"
 #    page.theme_mode = ft.ThemeMode.DARK
 #    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+
 
