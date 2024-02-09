@@ -4,29 +4,55 @@ def main(page:Page):
  
 	# CREATE FAKE DATA
 	data = [
-		{
-			"name":"","age":12
-		},
-		{
-			"name":"oppw","age":12
-		},
-		{
-			"name":"jenifer","age":12
-		},
-		{
-			"name":"aaan","age":12
-		},
-		{
-			"name":"buyua","age":12
-		},
-		{
-			"name":"qwmiu","age":12
-		},
-		{
-			"name":"dokoo","age":12
-		},
- 
-	]
+		
+    {"name": "Mehl"},
+    {"name": "Zucker"},
+    {"name": "Butter"},
+    {"name": "Eier"},
+    {"name": "Vanillezucker"},
+    {"name": "Backpulver"},
+    {"name": "Salz"},
+    {"name": "Milch"},
+    {"name": "Schokoladenstückchen"},
+    {"name": "gehackte Nüsse"},
+    {"name": "Haferflocken"},
+    {"name": "Rosinen"},
+    {"name": "Zimt"},
+    {"name": "Vanilleextrakt"},
+    {"name": "Rindfleisch"},
+    {"name": "Hühnchen"},
+    {"name": "Lachs"},
+    {"name": "Schweinefleisch"},
+    {"name": "Rucola"},
+    {"name": "Spinat"},
+    {"name": "Kopfsalat"},
+    {"name": "Tomaten"},
+    {"name": "Gurken"},
+    {"name": "Karotten"},
+    {"name": "Zwiebeln"},
+    {"name": "Knoblauch"},
+    {"name": "Kartoffeln"},
+    {"name": "Paprika"},
+    {"name": "Champignons"},
+    {"name": "Brokkoli"},
+    {"name": "Blumenkohl"},
+    {"name": "Sellerie"},
+    {"name": "Zucchini"},
+    {"name": "Mais"},
+    {"name": "Erbsen"},
+    {"name": "Bohnen"},
+    {"name": "Linsen"},
+    {"name": "Quinoa"},
+    {"name": "Reis"},
+    {"name": "Nudeln"},
+    {"name": "Brot"},
+    {"name": "Joghurt"},
+    {"name": "Käse"},
+    {"name": "Olivenöl"},
+    {"name": "Essig"},
+    {"name": "Senf"},
+    {"name": "Sojasauce"}
+]
  
 	resultdata = ListView()
  
@@ -62,7 +88,7 @@ def main(page:Page):
 			print(f"YOu result {result}")
 			for x in result:
 				resultdata.controls.append(
-					Text(f"name : {x['name']} age : {x['age']}",
+					Text(f"name : {x['name']} ",
 						size=20,color="white"
  
 						)
