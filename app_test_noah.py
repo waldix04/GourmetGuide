@@ -6,8 +6,7 @@ from flet_core.types import AnimationValue, ClipBehavior, OffsetValue, Responsiv
 # Waldi testes hier importe um auf andere seiten zu kommmen!
 from flet import RouteChangeEvent,ViewPopEvent,CrossAxisAlignment,MainAxisAlignment
 from flet import View,Page,AppBar,ElevatedButton,Text
-#Noah import für die Datenbank (man muss davor noch MySQL downloaden auf https://dev.mysql.com/downloads/mysql/5.0.html, Konfiguration abschließen, dann ins VSC Terminal "pip3 install mysql-connector-python" )
-import mysql.connector
+
 
 # Das ist der Header mit Eingabe vom User
 
@@ -24,8 +23,10 @@ class GourmetApp(ft.UserControl):
                     controls=[
                         self.new_meal,
                         ft.FloatingActionButton(icon=ft.icons.ADD, on_click=self.add_clicked),
+                        #Noah Suchbutton
+                        ft.FloatingActionButton(icon=ft.icons.SEARCH, on_click=self.search_clicked),
                     ],
-                ),
+                ),               
                 self.meals,
             ],
         )
@@ -39,6 +40,48 @@ class GourmetApp(ft.UserControl):
     def meal_delete(self, meal):
         self.meals.controls.remove(meal)
         self.update()
+    
+    #Noah Suchfunktion
+    def search_clicked(self, e):  # Klickereignis für die Suchfunktion
+        eingegebene_zutaten = self.new_meal.value.split(",")  # Annahme: Eingegebene Zutaten werden durch Kommas getrennt
+        gefundenen_gerichte = self.suche_nach_gerichten(eingegebene_zutaten, gerichte)
+        # Hier kannst du die gefundenen Gerichte weiter verarbeiten, z.B. anzeigen
+        print("Gefundene Gerichte:")
+        for gericht in gefundenen_gerichte:
+            print(f"{gericht['name']}:")
+            for zutat, menge in gericht['zutaten']:
+                print(f"- {zutat}: {menge}")
+
+    def suche_nach_gerichten(self, nach_zutaten, gerichte):
+        gefundenen_gerichte = []
+        for gericht in gerichte:
+            if all(zutat.lower() in [z[0].lower() for z in gericht['zutaten']] for zutat in nach_zutaten):
+                gefundenen_gerichte.append(gericht)
+        return gefundenen_gerichte
+    
+#Noah Datenbank als Liste:
+
+gerichte = [
+    {
+        'name': 'Spaghetti Carbonara',
+        'beschreibung': 'Nudeln mit Speck, Ei und Parmesan in Sahnesauce',
+        'preis': 9.99,
+        'zutaten': [('Nudeln', '200g'), ('Speck', '100g'), ('Ei', '2 Stück'), ('Parmesan', '50g'), ('Sahne', '100ml')]
+    },
+    {
+        'name': 'Gegrilltes Hähnchen',
+        'beschreibung': 'Saftiges Hähnchenbrustfilet vom Grill mit Gemüsebeilage',
+        'preis': 12.50,
+        'zutaten': [('Hähnchenbrustfilet', '300g'), ('Gemüse', '200g'), ('Gewürze', 'nach Geschmack')]
+    },
+    {
+        'name': 'Vegetarische Pizza',
+        'beschreibung': 'Pizza mit Tomatensauce, Mozzarella und verschiedenen Gemüsesorten',
+        'preis': 8.99,
+        'zutaten': [('Teig', '300g'), ('Tomatensauce', '150ml'), ('Mozzarella', '200g'), ('Gemüse', '150g')]
+    }
+]
+
 
 class Meal(ft.UserControl):
     def __init__(self, meal_name, meal_delete):
@@ -125,16 +168,6 @@ def main(page: ft.Page):
             )
         )
 '''
-    #Noah Datenbank Variable
-    my_db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="8899"
-    )
-    my_cursor = my_db.cursor()
-
-    my_cursor.execute("CREATE DATABASE rezepte")
-
 
 
 # Icons unten
