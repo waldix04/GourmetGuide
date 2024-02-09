@@ -106,13 +106,15 @@ def main(page: Page):
             View(
                 route='1',
                 controls=[
-                    AppBar(title=Text('Home'), bgcolor='black'),
-                    Text(value='Lebensmittel', size=30),
+                    AppBar(title=Text('Home'), bgcolor='black'),  #oben HEADER!
+                    Text(value='Lebensmittel', size=30), # Text in der mitte der Seite
                     txtsearch,  # Search-TextField hinzugefügt
                     resultcon,  # Ergebnis-Container hinzugefügt
                     ElevatedButton(text='Eigene Rezepte', on_click=lambda _: page.go('2')),
                     ElevatedButton(text='Entdecken', on_click=lambda _: page.go('3')),
                     ElevatedButton(text='Gespeichert', on_click=lambda _: page.go('4')),
+
+                    
 
                 ],
 
