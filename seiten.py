@@ -1,5 +1,5 @@
 import flet as ft
-from flet import RouteChangeEvent, View, AppBar, Text, ElevatedButton, MainAxisAlignment, CrossAxisAlignment, ViewPopEvent, TextField, NavigationBar
+from flet import RouteChangeEvent, View, AppBar, Text, ElevatedButton, MainAxisAlignment, CrossAxisAlignment, ViewPopEvent, TextField, NavigationBar, ListView, Container, transform, Offset, Column, Animation
 
 
 def main(page: ft.Page):
@@ -10,6 +10,7 @@ def main(page: ft.Page):
     def route_change(e: RouteChangeEvent) -> None: 
         page.views.clear()
         page.views.append(
+
             View(
                 route='1',
                 controls=[
@@ -29,8 +30,7 @@ def main(page: ft.Page):
                 )
             )
         
-        #, on_click=lambda _: page.go('4')
-    
+        
         if page.route == '2':
             page.views.append(
             View(

@@ -1,141 +1,192 @@
-# Imports die man braucht
-from typing import Any, List, Optional, Union
-import flet as ft
-from flet_core.control import Control, OptionalNumber
-from flet_core.ref import Ref
-from flet_core.types import AnimationValue, ClipBehavior, OffsetValue, ResponsiveNumber, RotateValue, ScaleValue
+from flet import RouteChangeEvent, View, AppBar, Text, ElevatedButton, MainAxisAlignment, CrossAxisAlignment, ViewPopEvent, TextField, ListView, Container, Offset, Column, Animation, Page
 
-# Klasse GourmetApp ist schon direkt sichtbar auf Mainpage
-class GourmetApp(ft.UserControl):
-
-    # Funktion, die in Abhängigkeit von "self" agiert
-    def build(self):
-
-        #Zuerst das Eingabefeld mit Hinweistext
-        self.new_meal = ft.TextField(hint_text="Was hast du noch in der Vorratskammer?", expand=True)
-        self.meals = ft.Column()
-
-        # Überschrift Lebensmittel und der Add-Button rechts vom Eingabefeld
-        return ft.Column(
-            width=600,
-            controls=[
-                ft.Row([ ft.Text(value="Lebensmittel", style="headlineMedium")], alignment=ft.MainAxisAlignment.CENTER),
-                ft.Row(
-                    controls=[
-                        self.new_meal,
-                        ft.FloatingActionButton(icon=ft.icons.ADD, on_click=self.add_clicked),
-                    ],
-                ),
-                self.meals,
-            ],
-        )
-    
-    # Die Funktion wenn der Add-Button geklickt wird, ruft auch die Klasse "Meal" auf
-    def add_clicked(self, e):
-        meal = Meal(self.new_meal.value, self.meal_delete)
-        self.meals.controls.append(meal)
-        self.new_meal.value = ""
-        self.update()
-
-    def meal_delete(self, meal):
-        self.meals.controls.remove(meal)
-        self.update()
-
-
-# Klasse "Meal" mit weiteren Benutzerkontrollmöglichkeiten, um die Lebensmittel zu bearbeiten
-class Meal(ft.UserControl):
-
-    # Initialisierung und Übergabe von Variablen
-    def __init__(self, meal_name, meal_delete):
-        super().__init__()
-        self.meal_name = meal_name
-        self.meal_delete = meal_delete
-
-    # Hinzugefügte Lebensmittel werden aufgebaut/angezeigt (Checkbox und danben Textfeld)
-    def build(self):
-        self.display_meal = ft.Checkbox(value=False, label=self.meal_name)
-        self.edit_name = ft.TextField(expand=1)
-
-        self.display_view = ft.Row(
-            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-            vertical_alignment=ft.CrossAxisAlignment.CENTER,
-
-            # Kontrollmöglichkeiten für die Lebensmittel mit Icon und Text (=Iconbutton)
-            controls=[
-                self.display_meal,
-                ft.Row(
-                    spacing=0,
-                    controls=[
-                        ft.IconButton(
-                            icon=ft.icons.CREATE_OUTLINED,
-                            tooltip="Bearbeiten",
-                            on_click=self.edit_clicked,
-                        ),
-                        ft.IconButton(
-                            ft.icons.DELETE_OUTLINE,
-                            tooltip="Löschen",
-                            on_click=self.delete_clicked,
-                        ),
-                    ],
-                ),
-            ],
-        )
-
-        # Iconbutton zum Bestätigen der Veränderungen ist am Anfang nicht sichtbar
-        self.edit_view = ft.Row(
-            visible=False,
-            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-            vertical_alignment=ft.CrossAxisAlignment.CENTER,
-            controls=[
-                self.edit_name,
-                ft.IconButton(
-                    icon=ft.icons.DONE_OUTLINE_OUTLINED,
-                    icon_color=ft.colors.GREEN,
-                    tooltip="Bestätigen",
-                    on_click=self.save_clicked,
-                ),
-            ],
-        )
-        return ft.Column(controls=[self.display_view, self.edit_view])
-
-    # Logik dahinter wenn man die unterschiedlichen Buttons benutzt, werden auch direkt von den Buttons aufgerufen
-    def edit_clicked(self, e):
-        self.edit_name.value = self.display_meal.label
-        self.display_view.visible = False
-        self.edit_view.visible = True
-        self.update()
-
-    def save_clicked(self, e):
-        self.display_meal.label = self.edit_name.value
-        self.display_view.visible = True
-        self.edit_view.visible = False
-        self.update()
-
-    def delete_clicked(self, e):
-        self.meal_delete(self)
-
-# Mainpage wird definiert: Titel, Ausrichtung, Navigationsbuttons
-def main(page: ft.Page):
+def main(page: Page):
     page.title = "Gourmet Guide"
-    page.theme_mode = ft.ThemeMode.DARK
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.update()
+    page.vertical_alignment = MainAxisAlignment.CENTER
+    page.theme_mode = "dark"  
+    
+    data = [
+        {"name": "Mehl"},
+        {"name": "Zucker"},
+        {"name": "Butter"},
+        {"name": "Eier"},
+        {"name": "Vanillezucker"},
+        {"name": "Backpulver"},
+        {"name": "Salz"},
+        {"name": "Milch"},
+        {"name": "Schokoladenstückchen"},
+        {"name": "gehackte Nüsse"},
+        {"name": "Haferflocken"},
+        {"name": "Rosinen"},
+        {"name": "Zimt"},
+        {"name": "Vanilleextrakt"},
+        {"name": "Rindfleisch"},
+        {"name": "Hühnchen"},
+        {"name": "Lachs"},
+        {"name": "Schweinefleisch"},
+        {"name": "Rucola"},
+        {"name": "Spinat"},
+        {"name": "Kopfsalat"},
+        {"name": "Tomaten"},
+        {"name": "Gurken"},
+        {"name": "Karotten"},
+        {"name": "Zwiebeln"},
+        {"name": "Knoblauch"},
+        {"name": "Kartoffeln"},
+        {"name": "Paprika"},
+        {"name": "Champignons"},
+        {"name": "Brokkoli"},
+        {"name": "Blumenkohl"},
+        {"name": "Sellerie"},
+        {"name": "Zucchini"},
+        {"name": "Mais"},
+        {"name": "Erbsen"},
+        {"name": "Bohnen"},
+        {"name": "Linsen"},
+        {"name": "Quinoa"},
+        {"name": "Reis"},
+        {"name": "Nudeln"},
+        {"name": "Brot"},
+        {"name": "Joghurt"},
+        {"name": "Käse"},
+        {"name": "Olivenöl"},
+        {"name": "Essig"},
+        {"name": "Senf"},
+        {"name": "Sojasauce"}
+    ]
 
-    #Die Buttons machen bisher noch nichts
-    page.navigation_bar = ft.NavigationBar(
-        destinations=[
-            ft.NavigationDestination(icon=ft.icons.EXPLORE, label="Entdecken"),
-            ft.NavigationDestination(icon=ft.icons.ADD_BOX, label="Eigene Rezepte"),
-            ft.NavigationDestination(
-                icon=ft.icons.BOOKMARK_BORDER,
-                selected_icon=ft.icons.BOOKMARK,
-                label="Gespeicherte Rezepte",
-            ),
-        ]
+    resultdata = ListView()
+
+    resultcon = Container(
+        bgcolor="red200",
+        padding=10,
+        margin=10,
+        offset=Offset(-2, 0), 
+        animate_offset=Animation(600, curve="easeIn"),
+        content=Column([
+            resultdata
+
+        ])
     )
 
-    # Klasse GourmetAPP wird zu der Mainpage hinzugefügt durch Variable "meal" (man könnte noch mehr von der Mainpage in die Klasse schreiben)
-    meal = GourmetApp()
-    page.add(meal)
-    
-ft.app(target=main)
+    def searchnow(e):
+        mysearch = e.control.value
+        result = []
+
+        if not mysearch == "":
+            resultcon.visible = True
+            for item in data:
+                if mysearch in item['name']:
+                    resultcon.offset = Offset(0, 0)  
+                    result.append(item)
+
+        if result:
+            resultdata.controls.clear()
+            print(f"Your result {result}")  
+            for x in result:
+                resultdata.controls.append(
+                    Text(f"name : {x['name']} ",
+                         size=20, color="white"
+
+                         )
+
+                )
+        else:
+            resultcon.offset = Offset(-2, 0)  
+            resultdata.controls.clear()
+
+    resultcon.visible = False
+
+    txtsearch = TextField(label="Search now", on_change=searchnow)
+
+    def route_change(e: RouteChangeEvent) -> None:
+        page.views.clear()
+        page.views.append(
+
+            View(
+                route='1',
+                controls=[
+                    AppBar(title=Text('Home'), bgcolor='black'),
+                    Text(value='Lebensmittel', size=30),
+                    txtsearch,  # Search-TextField hinzugefügt
+                    resultcon,  # Ergebnis-Container hinzugefügt
+                    ElevatedButton(text='Eigene Rezepte', on_click=lambda _: page.go('2')),
+                    ElevatedButton(text='Entdecken', on_click=lambda _: page.go('3')),
+                    ElevatedButton(text='Gespeichert', on_click=lambda _: page.go('4')),
+
+                ],
+
+                vertical_alignment=MainAxisAlignment.CENTER,
+                horizontal_alignment=CrossAxisAlignment.CENTER,
+                spacing=26
+
+            )
+        )
+
+        if page.route == '2':
+            page.views.append(
+                View(
+                    route='2',
+                    controls=[
+                        AppBar(title=Text('Eigene Rezepte'), bgcolor='black'),
+                        Text(value='Deine eigenen Rezepte', size=30),
+                        ElevatedButton(text='Zurück', on_click=lambda _: page.go('1'))
+
+                    ],
+                    vertical_alignment=MainAxisAlignment.CENTER,
+                    horizontal_alignment=CrossAxisAlignment.CENTER,
+                    spacing=26
+
+
+                )
+            )
+
+        if page.route == '3':
+            page.views.append(
+                View(
+                    route='3',
+                    controls=[
+                        AppBar(title=Text('Entdecken'), bgcolor='black'),
+                        Text(value='Diese Rezepte könnten dir gefallen', size=30),
+                        ElevatedButton(text='Zurück', on_click=lambda _: page.go('1'))
+
+                    ],
+                    vertical_alignment=MainAxisAlignment.CENTER,
+                    horizontal_alignment=CrossAxisAlignment.CENTER,
+                    spacing=26
+
+
+                )
+            )
+
+        if page.route == '4':
+            page.views.append(
+                View(
+                    route='4',
+                    controls=[
+                        AppBar(title=Text('Gespeichert'), bgcolor='black'),
+                        Text(value='Deine gespeicherten Rezepte', size=30),
+                        ElevatedButton(text='Zurück', on_click=lambda _: page.go('1'))
+
+                    ],
+                    vertical_alignment=MainAxisAlignment.CENTER,
+                    horizontal_alignment=CrossAxisAlignment.CENTER,
+                    spacing=26
+
+
+                )
+            )
+
+    def view_pop(e: ViewPopEvent) -> None:
+        page.views.pop()
+        top_view: View = page.views[-1]
+        page.go(top_view.route)
+
+    page.on_route_change = route_change
+    page.on_view_pop = view_pop
+    page.go(page.route)
+
+
+if __name__ == '__main__':
+    from flet import app
+    app(target=main)
