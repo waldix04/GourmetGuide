@@ -24,6 +24,7 @@ sql = """
             
         )
       """
+my_cursor.execute(sql)
 my_cursor.execute("SHOW DATABASES")
 
 for db in my_cursor: 
