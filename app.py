@@ -1,4 +1,5 @@
-from flet import *
+import flet 
+from flet import * 
 from flet import app
 
 
@@ -6,7 +7,23 @@ def main(page: Page):
     page.title = "Gourmet Guide"
     page.vertical_alignment = MainAxisAlignment.CENTER
     page.theme_mode = "dark"  
-    
+
+    btn_eigene_rezepte = ElevatedButton(text='Eigene Rezepte', icon=icons.ADD, on_click=lambda _: page.go('2'))
+    btn_entdecken = ElevatedButton(text='Entdecken', icon=icons.EXPLORE, on_click=lambda _: page.go('3'))
+    btn_gespeichert = ElevatedButton(text='Gespeichert', icon=icons.BOOKMARK, on_click=lambda _: page.go('4'))
+
+
+    bottom_bar = Container(
+        content=Row([btn_eigene_rezepte, btn_entdecken, btn_gespeichert], alignment='space-between'),
+        #Noch hinfügen:
+        #Position Bottom?? Wie kriegt man das hin
+        #bgcolor='gray',
+        #width='100%',
+        #padding=100,
+        #alignment= 'bottom_center',
+        #bottom=0
+    )
+
     data = [
         {"name": "Mehl"},
         {"name": "Zucker"},
@@ -124,11 +141,8 @@ def main(page: Page):
                     Text(value='Lebensmittel', size=30),
                     txtsearch,  # Search-TextField hinzugefügt
                     resultcon,  # Ergebnis-Container hinzugefügt
-                    ElevatedButton(text='Eigene Rezepte', on_click=lambda _: page.go('2')),
-                    ElevatedButton(text='Entdecken', on_click=lambda _: page.go('3')),
-                    ElevatedButton(text='Gespeichert', on_click=lambda _: page.go('4')),
-
-                ],
+                    bottom_bar,
+                       ],
 
                 vertical_alignment=MainAxisAlignment.CENTER,
                 horizontal_alignment=CrossAxisAlignment.CENTER,
