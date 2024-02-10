@@ -1,4 +1,6 @@
-from flet import RouteChangeEvent, View, AppBar, Text, ElevatedButton, MainAxisAlignment, CrossAxisAlignment, ViewPopEvent, TextField, ListView, Container, Offset, Column, Animation, Page
+from flet import *
+from flet import app
+
 
 def main(page: Page):
     page.title = "Gourmet Guide"
@@ -79,6 +81,7 @@ def main(page: Page):
                 if mysearch in item['name']:
                     resultcon.offset = Offset(0, 0)  
                     result.append(item)
+            page.update()
 
         if result:
             resultdata.controls.clear()
@@ -91,13 +94,24 @@ def main(page: Page):
                          )
 
                 )
+            page.update()
+
         else:
             resultcon.offset = Offset(-2, 0)  
             resultdata.controls.clear()
+            page.update()
 
     resultcon.visible = False
 
     txtsearch = TextField(label="Search now", on_change=searchnow)
+
+    page.add(
+	Column([
+	Text("Search Anything",size=30,weight="bold"),
+	txtsearch,
+	resultcon
+	])
+		)
 
     def route_change(e: RouteChangeEvent) -> None:
         page.views.clear()
@@ -188,5 +202,4 @@ def main(page: Page):
 
 
 if __name__ == '__main__':
-    from flet import app
     app(target=main)
