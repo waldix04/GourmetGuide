@@ -13,15 +13,17 @@ def main(page: Page):
     btn_entdecken = ElevatedButton(text='Entdecken', icon=icons.EXPLORE, on_click=lambda _: page.go('3'))
     btn_gespeichert = ElevatedButton(text='Gespeichert', icon=icons.BOOKMARK, on_click=lambda _: page.go('4'))
 
-    # Container für die untere Leiste (um den grauen Hintergrund zu erzeugen)
-    bottom_bar = Container(
-        content=Row([btn_eigene_rezepte, btn_entdecken, btn_gespeichert], alignment='space-between'),
-        #Position Bottom?? Wie kriegt man das hin
-        #bgcolor='gray',
-        #width='100%',
-        #padding=100,
-        #alignment= 'bottom_center',
-        #bottom=0
+    page.bottom_appbar= flet.BottomAppBar(
+        bgcolor=flet.colors.BLACK12,
+        shape=flet.NotchShape.CIRCULAR,
+        content=flet.Row(
+            controls=[
+                btn_eigene_rezepte,
+                btn_entdecken,
+                btn_gespeichert,
+            ]
+        ),
+
     )
 
     
@@ -146,7 +148,7 @@ def main(page: Page):
                     Text(value='Lebensmittel', size=30),
                     txtsearch,  # Search-TextField hinzugefügt
                     resultcon,  # Ergebnis-Container hinzugefügt
-                    bottom_bar,
+                    page.bottom_appbar,
                 ],
 
                 vertical_alignment=MainAxisAlignment.CENTER,
