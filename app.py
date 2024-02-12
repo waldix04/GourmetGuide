@@ -1,13 +1,24 @@
 import flet 
 from flet import * 
-from flet import app
+#Unsere Datenbanken
+import daten
+from daten import data, speisedata, gerichte
 
 
 def main(page: Page):
     page.title = "Gourmet Guide"
     page.vertical_alignment = MainAxisAlignment.CENTER
     page.theme_mode = "dark"  
+ 
+    page.appbar1= flet.AppBar(
+        title=Text('Home'), 
+        bgcolor='black',
+        center_title=False,
+        actions=[
+            ElevatedButton(text='Speisekammer', icon=icons.FOOD_BANK, on_click=lambda _:page.go('5'))
+        ]
 
+    )
     # ElevatedButtons für die untere Leiste
     btn_eigene_rezepte = ElevatedButton(text='Eigene Rezepte', icon=icons.ADD, on_click=lambda _: page.go('2'))
     btn_entdecken = ElevatedButton(text='Entdecken', icon=icons.EXPLORE, on_click=lambda _: page.go('3'))
@@ -27,56 +38,8 @@ def main(page: Page):
     )
 
     
-    data = [
-        {"name": "Mehl"},
-        {"name": "Zucker"},
-        {"name": "Butter"},
-        {"name": "Eier"},
-        {"name": "Vanillezucker"},
-        {"name": "Backpulver"},
-        {"name": "Salz"},
-        {"name": "Milch"},
-        {"name": "Schokoladenstückchen"},
-        {"name": "gehackte Nüsse"},
-        {"name": "Haferflocken"},
-        {"name": "Rosinen"},
-        {"name": "Zimt"},
-        {"name": "Vanilleextrakt"},
-        {"name": "Rindfleisch"},
-        {"name": "Hühnchen"},
-        {"name": "Lachs"},
-        {"name": "Schweinefleisch"},
-        {"name": "Rucola"},
-        {"name": "Spinat"},
-        {"name": "Kopfsalat"},
-        {"name": "Tomaten"},
-        {"name": "Gurken"},
-        {"name": "Karotten"},
-        {"name": "Zwiebeln"},
-        {"name": "Knoblauch"},
-        {"name": "Kartoffeln"},
-        {"name": "Paprika"},
-        {"name": "Champignons"},
-        {"name": "Brokkoli"},
-        {"name": "Blumenkohl"},
-        {"name": "Sellerie"},
-        {"name": "Zucchini"},
-        {"name": "Mais"},
-        {"name": "Erbsen"},
-        {"name": "Bohnen"},
-        {"name": "Linsen"},
-        {"name": "Quinoa"},
-        {"name": "Reis"},
-        {"name": "Nudeln"},
-        {"name": "Brot"},
-        {"name": "Joghurt"},
-        {"name": "Käse"},
-        {"name": "Olivenöl"},
-        {"name": "Essig"},
-        {"name": "Senf"},
-        {"name": "Sojasauce"}
-    ]
-
+   
+    #Container mit den Zutaten
     resultdata = ListView()
 
     resultcon = Container(
@@ -122,7 +85,7 @@ def main(page: Page):
 
     resultcon.visible = False
 
-    txtsearch = TextField(label="Search now", on_change=searchnow)
+    txtsearch = TextField(label="Suche", on_change=searchnow)
 
     page.add(
 	Column([
@@ -132,11 +95,17 @@ def main(page: Page):
 	])
 		)
     def add_to_inventory(name):
-    # Hier fügen Sie das ausgewählte Nahrungsmittel zur Inventartabelle hinzu
+    # Hier fügen Sie das ausgewählte Nahrungsmittel zur Speisekammer hinzu
     # Zum Beispiel:
         print(f"Adding {name} to inventory")
     # Fügen Sie das ausgewählte Nahrungsmittel zur Inventartabelle hinzu und speichern Sie es
 
+
+
+
+
+
+    #Die verschiedenen Seiten, wenn man etwas designen will, dann bei controls hinzufügen. Definieren muss man die Variblen außerhalb
     def route_change(e: RouteChangeEvent) -> None:
         page.views.clear()
         page.views.append(
@@ -144,14 +113,14 @@ def main(page: Page):
             View(
                 route='1',
                 controls=[
-                    AppBar(title=Text('Home'), bgcolor='black'),
+                    page.appbar1,
                     Text(value='Lebensmittel', size=30),
-                    txtsearch,  # Search-TextField hinzugefügt
-                    resultcon,  # Ergebnis-Container hinzugefügt
+                    txtsearch,  
+                    resultcon,  
                     page.bottom_appbar,
                 ],
 
-                vertical_alignment=MainAxisAlignment.CENTER,
+                vertical_alignment=MainAxisAlignment.START,
                 horizontal_alignment=CrossAxisAlignment.CENTER,
                 spacing=26
 
@@ -168,7 +137,7 @@ def main(page: Page):
                         ElevatedButton(text='Zurück', on_click=lambda _: page.go('1'))
 
                     ],
-                    vertical_alignment=MainAxisAlignment.CENTER,
+                    vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                     spacing=26
 
@@ -186,7 +155,7 @@ def main(page: Page):
                         ElevatedButton(text='Zurück', on_click=lambda _: page.go('1'))
 
                     ],
-                    vertical_alignment=MainAxisAlignment.CENTER,
+                    vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                     spacing=26
 
@@ -204,7 +173,7 @@ def main(page: Page):
                         ElevatedButton(text='Zurück', on_click=lambda _: page.go('1'))
 
                     ],
-                    vertical_alignment=MainAxisAlignment.CENTER,
+                    vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                     spacing=26
 
@@ -212,6 +181,27 @@ def main(page: Page):
                 )
             )
 
+        if page.route == '5':
+            page.views.append(
+                View(
+                    route='5',
+                    controls=[
+                        AppBar(title=Text('Speisekammer'), bgcolor='black'),
+                        Text(value='Hier sind alle deine Lebensmittel', size=30),
+                        #ElevatedButton(text='Zurück', on_click=lambda _: page.go('1')),
+                            
+                        speisedata
+                    ],
+                      
+                    vertical_alignment=MainAxisAlignment.START,
+                    horizontal_alignment=CrossAxisAlignment.CENTER,
+                    spacing=26
+
+
+                )
+            )
+
+                
     def view_pop(e: ViewPopEvent) -> None:
         page.views.pop()
         top_view: View = page.views[-1]
