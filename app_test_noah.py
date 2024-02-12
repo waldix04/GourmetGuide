@@ -78,7 +78,8 @@ def main(page: Page):
     resultdata = ListView()
 
     resultcon = Container(
-        bgcolor="red200",
+        #bgcolor="red200",
+        bgcolor="grey850",
         padding=10,
         margin=10,
         offset=Offset(-2, 0), 
@@ -105,13 +106,11 @@ def main(page: Page):
             resultdata.controls.clear()
             print(f"Your result {result}")  
             for x in result:
-                resultdata.controls.append(
-                    Text(f"name : {x['name']} ",
-                         size=20, color="white"
-
-                         )
-
-                )
+                row_container = Row([
+                    Text(f"Zutat : {x['name']} ", size=20, color="white"),
+                    IconButton(icons.ADD_BOX_SHARP, on_click=lambda e, name=x['name']: add_to_inventory(name))
+                ])
+                resultdata.controls.append(row_container)
             page.update()
 
         else:
@@ -130,6 +129,11 @@ def main(page: Page):
 	resultcon
 	])
 		)
+    def add_to_inventory(name):
+    # Hier fügen Sie das ausgewählte Nahrungsmittel zur Inventartabelle hinzu
+    # Zum Beispiel:
+        print(f"Adding {name} to inventory")
+    # Fügen Sie das ausgewählte Nahrungsmittel zur Inventartabelle hinzu und speichern Sie es
 
     def route_change(e: RouteChangeEvent) -> None:
         page.views.clear()

@@ -8,14 +8,14 @@ def main(page: Page):
     page.vertical_alignment = MainAxisAlignment.CENTER
     page.theme_mode = "dark"  
 
+    # ElevatedButtons für die untere Leiste
     btn_eigene_rezepte = ElevatedButton(text='Eigene Rezepte', icon=icons.ADD, on_click=lambda _: page.go('2'))
     btn_entdecken = ElevatedButton(text='Entdecken', icon=icons.EXPLORE, on_click=lambda _: page.go('3'))
     btn_gespeichert = ElevatedButton(text='Gespeichert', icon=icons.BOOKMARK, on_click=lambda _: page.go('4'))
 
-
+    # Container für die untere Leiste (um den grauen Hintergrund zu erzeugen)
     bottom_bar = Container(
         content=Row([btn_eigene_rezepte, btn_entdecken, btn_gespeichert], alignment='space-between'),
-        #Noch hinfügen:
         #Position Bottom?? Wie kriegt man das hin
         #bgcolor='gray',
         #width='100%',
@@ -24,6 +24,7 @@ def main(page: Page):
         #bottom=0
     )
 
+    
     data = [
         {"name": "Mehl"},
         {"name": "Zucker"},
@@ -77,7 +78,8 @@ def main(page: Page):
     resultdata = ListView()
 
     resultcon = Container(
-        bgcolor="red200",
+        #bgcolor="red200",
+        bgcolor="grey850",
         padding=10,
         margin=10,
         offset=Offset(-2, 0), 
@@ -104,13 +106,11 @@ def main(page: Page):
             resultdata.controls.clear()
             print(f"Your result {result}")  
             for x in result:
-                resultdata.controls.append(
-                    Text(f"name : {x['name']} ",
-                         size=20, color="white"
-
-                         )
-
-                )
+                row_container = Row([
+                    Text(f"Zutat : {x['name']} ", size=20, color="white"),
+                    IconButton(icons.ADD_BOX_SHARP, on_click=lambda e, name=x['name']: add_to_inventory(name))
+                ])
+                resultdata.controls.append(row_container)
             page.update()
 
         else:
@@ -129,6 +129,11 @@ def main(page: Page):
 	resultcon
 	])
 		)
+    def add_to_inventory(name):
+    # Hier fügen Sie das ausgewählte Nahrungsmittel zur Inventartabelle hinzu
+    # Zum Beispiel:
+        print(f"Adding {name} to inventory")
+    # Fügen Sie das ausgewählte Nahrungsmittel zur Inventartabelle hinzu und speichern Sie es
 
     def route_change(e: RouteChangeEvent) -> None:
         page.views.clear()
@@ -142,7 +147,7 @@ def main(page: Page):
                     txtsearch,  # Search-TextField hinzugefügt
                     resultcon,  # Ergebnis-Container hinzugefügt
                     bottom_bar,
-                       ],
+                ],
 
                 vertical_alignment=MainAxisAlignment.CENTER,
                 horizontal_alignment=CrossAxisAlignment.CENTER,
