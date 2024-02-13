@@ -17,27 +17,29 @@ def main(page: Page):
         actions=[
             ElevatedButton(text='Speisekammer', icon=icons.FOOD_BANK, on_click=lambda _:page.go('5'))
         ]
-
     )
+
     # ElevatedButtons für die untere Leiste
     btn_eigene_rezepte = ElevatedButton(text='Eigene Rezepte', icon=icons.ADD, on_click=lambda _: page.go('2'))
     btn_entdecken = ElevatedButton(text='Entdecken', icon=icons.EXPLORE, on_click=lambda _: page.go('3'))
     btn_gespeichert = ElevatedButton(text='Gespeichert', icon=icons.BOOKMARK, on_click=lambda _: page.go('4'))
 
-    page.bottom_appbar= flet.BottomAppBar(
+    bottom_app_bar= flet.BottomAppBar(
         bgcolor=flet.colors.BLACK12,
         shape=flet.NotchShape.CIRCULAR,
+
+        #padding=flet.PaddingValue(horizontal=16),       
         content=flet.Row(
             controls=[
                 btn_eigene_rezepte,
+                flet.Container(expand=True),
                 btn_entdecken,
+                flet.Container(expand=True),
                 btn_gespeichert,
             ]
         ),
 
     )
-
-    
    
     #Container mit den Zutaten
     resultdata = ListView()
@@ -72,7 +74,7 @@ def main(page: Page):
             print(f"Your result {result}")  
             for x in result:
                 row_container = Row([
-                    Text(f"Zutat : {x['name']} ", size=20, color="white"),
+                    Text(f" {x['name']} ", size=20, color="white"),
                     IconButton(icons.ADD_BOX_SHARP, on_click=lambda e, name=x['name']: add_to_inventory(name))
                 ])
                 resultdata.controls.append(row_container)
@@ -97,6 +99,15 @@ def main(page: Page):
     def add_to_inventory(name):
     # Hier fügen Sie das ausgewählte Nahrungsmittel zur Speisekammer hinzu
     # Zum Beispiel:
+        speisedata.rows.append(
+            flet.DataRow(
+                cells=[
+                    flet.DataCell(flet.Text(name)),
+                    flet.DataCell(flet.Text("100")),
+                    flet.DataCell(flet.Text("Gramm")),
+                ]
+            )
+        )
         print(f"Adding {name} to inventory")
     # Fügen Sie das ausgewählte Nahrungsmittel zur Inventartabelle hinzu und speichern Sie es
 
@@ -117,7 +128,7 @@ def main(page: Page):
                     Text(value='Lebensmittel', size=30),
                     txtsearch,  
                     resultcon,  
-                    page.bottom_appbar,
+                    bottom_app_bar,
                 ],
 
                 vertical_alignment=MainAxisAlignment.START,

@@ -52,20 +52,10 @@ data = [
 
 speisedata= flet.DataTable(
         columns=[
-            flet.DataColumn(flet.Text("name")),
+            flet.DataColumn(flet.Text("Name")),
             flet.DataColumn(flet.Text("Menge")),
             flet.DataColumn(flet.Text("Einheit")),
         ],
-        rows=[
-            flet.DataRow(
-                cells=[
-                    flet.DataCell(flet.Text("Tomaten")),
-                    flet.DataCell(flet.Text("200")),
-                    flet.DataCell(flet.Text("Gramm")),
-                ]
-            )
-        ]
-
     )
 
 gerichte = [
