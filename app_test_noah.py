@@ -1,6 +1,7 @@
 import flet
 from flet import *
-
+#Für die matching dishes Tabelle
+from collections import Counter
 # Unsere Datenbanken
 import daten
 from daten import data, speisedata, gerichte
@@ -99,13 +100,18 @@ def main(page: Page):
 
     def check_matching_dishes():
         available_ingredients = {extract_text(row.cells[0]) for row in speisedata.rows}  # Extrahiere alle Zutatennamen aus speisedata
-        matching_dishes_names = []
+        matching_dishes = []
 
         for dish in gerichte:
             dish_ingredients = [extract_text(ingredient[0]) for ingredient in dish['zutaten']]  # Extrahiere die Zutatennamen des Gerichts
-            if all(ingredient in available_ingredients for ingredient in dish_ingredients):
-                matching_dishes_names.append(dish['name'])
-        return matching_dishes_names
+            common_ingredients = set(dish_ingredients).intersection(available_ingredients)
+            if len(common_ingredients) > 0:
+                matching_dishes.append((dish['name'], len(common_ingredients)))
+
+        matching_dishes.sort(key=lambda x: x[1], reverse=True)
+        matching_dishes = matching_dishes[:5]  # Begrenze auf höchstens 5 Gerichte
+
+        return [dish_name for dish_name, _ in matching_dishes]
     
     matching_dishes_names = check_matching_dishes()
     matching_dishes_table = flet.DataTable(

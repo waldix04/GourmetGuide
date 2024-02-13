@@ -1,5 +1,6 @@
 import flet
 
+#Lebensmittel Tabelle
 data = data = [
     {"name": "Ananas"},
     {"name": "Apfel"},
@@ -90,7 +91,7 @@ data = data = [
 ]
 
 
-
+#Speisekammer Tabelle
 speisedata= flet.DataTable(
         columns=[
             flet.DataColumn(flet.Text("Name")),
@@ -99,6 +100,7 @@ speisedata= flet.DataTable(
         ],
     )
 
+#Gerichte Tabelle
 gerichte = [
     {
         'name': 'Spaghetti Carbonara',
@@ -198,6 +200,7 @@ gerichte = [
 
 ]
 
+#Überlegung diese Tabelle als Lebensmittel Tabelle zu übernehmen, da wir dann nicht immer 100 Gramm machen müssten
 data2 = flet.DataTable(
     columns=[
         flet.DataColumn(flet.Text("Name")),

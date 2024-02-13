@@ -1,5 +1,7 @@
 import flet
 from flet import *
+#Für die matching dishes Tabelle
+from collections import Counter
 # Unsere Datenbanken
 import daten
 from daten import data, speisedata, gerichte
@@ -9,7 +11,7 @@ def main(page: Page):
     page.vertical_alignment = MainAxisAlignment.CENTER
     page.theme_mode = "dark"  
 
-    page.appbar1= flet.AppBar(
+    page.appbar1 = flet.AppBar(
         title=Text('Home'), 
         bgcolor='black',
         center_title=False,
@@ -17,18 +19,15 @@ def main(page: Page):
             ElevatedButton(text='Speisekammer', icon=icons.FOOD_BANK, on_click=lambda _:page.go('5'))
         ]
     )
-    
 
     # ElevatedButtons für die untere Leiste
     btn_eigene_rezepte = ElevatedButton(text='Eigene Rezepte', icon=icons.ADD, on_click=lambda _: page.go('2'))
     btn_entdecken = ElevatedButton(text='Entdecken', icon=icons.EXPLORE, on_click=lambda _: page.go('3'))
     btn_gespeichert = ElevatedButton(text='Gespeichert', icon=icons.BOOKMARK, on_click=lambda _: page.go('4'))
 
-    bottom_app_bar= flet.BottomAppBar(
+    bottom_app_bar = flet.BottomAppBar(
         bgcolor=flet.colors.BLACK12,
         shape=flet.NotchShape.CIRCULAR,
-
-        #padding=flet.PaddingValue(horizontal=16),       
         content=flet.Row(
             controls=[
                 btn_eigene_rezepte,
@@ -38,7 +37,6 @@ def main(page: Page):
                 btn_gespeichert,
             ]
         ),
-
     )
    
     # Container mit den Zutaten
@@ -88,7 +86,7 @@ def main(page: Page):
 
     page.add(
         Column([
-            Text("Search Anything",size=30,weight="bold"),
+            Text("Search Anything", size=30, weight="bold"),
             txtsearch,
             resultcon
         ])
@@ -100,17 +98,28 @@ def main(page: Page):
         else:
             return ""
 
-
     def check_matching_dishes():
         available_ingredients = {extract_text(row.cells[0]) for row in speisedata.rows}  # Extrahiere alle Zutatennamen aus speisedata
-        matching_dishes_names = []
+        matching_dishes = []
 
         for dish in gerichte:
             dish_ingredients = [extract_text(ingredient[0]) for ingredient in dish['zutaten']]  # Extrahiere die Zutatennamen des Gerichts
-            if all(ingredient in available_ingredients for ingredient in dish_ingredients):
-                matching_dishes_names.append(dish['name'])
+            common_ingredients = set(dish_ingredients).intersection(available_ingredients)
+            if len(common_ingredients) > 0:
+                matching_dishes.append((dish['name'], len(common_ingredients)))
 
-        return matching_dishes_names
+        matching_dishes.sort(key=lambda x: x[1], reverse=True)
+        matching_dishes = matching_dishes[:5]  # Begrenze auf höchstens 5 Gerichte
+
+        return [dish_name for dish_name, _ in matching_dishes]
+    
+    matching_dishes_names = check_matching_dishes()
+    matching_dishes_table = flet.DataTable(
+        columns=[
+            flet.DataColumn(flet.Text("Passende Gerichte"))
+        ],
+        rows=[flet.DataRow(cells=[flet.DataCell(flet.Text(name))]) for name in matching_dishes_names]
+    )
 
     def add_to_inventory(name):
         speisedata.rows.append(
@@ -123,6 +132,7 @@ def main(page: Page):
             )
         )
         matching_dishes = check_matching_dishes()
+        matching_dishes_table.rows = [flet.DataRow(cells=[flet.DataCell(flet.Text(name))]) for name in matching_dishes]
         print("Matching dishes:", matching_dishes)
 
     def route_change(e: RouteChangeEvent) -> None:
@@ -134,7 +144,8 @@ def main(page: Page):
                     page.appbar1,
                     Text('Lebensmittel', size=30),
                     txtsearch,  
-                    resultcon,  
+                    resultcon, 
+                    matching_dishes_table, 
                     bottom_app_bar,
                 ],
                 vertical_alignment=MainAxisAlignment.START,
