@@ -1,15 +1,14 @@
-import flet 
-from flet import * 
-#Unsere Datenbanken
+import flet
+from flet import *
+# Unsere Datenbanken
 import daten
 from daten import data, speisedata, gerichte
-
 
 def main(page: Page):
     page.title = "Gourmet Guide"
     page.vertical_alignment = MainAxisAlignment.CENTER
     page.theme_mode = "dark"  
- 
+
     page.appbar1= flet.AppBar(
         title=Text('Home'), 
         bgcolor='black',
@@ -18,6 +17,7 @@ def main(page: Page):
             ElevatedButton(text='Speisekammer', icon=icons.FOOD_BANK, on_click=lambda _:page.go('5'))
         ]
     )
+    
 
     # ElevatedButtons für die untere Leiste
     btn_eigene_rezepte = ElevatedButton(text='Eigene Rezepte', icon=icons.ADD, on_click=lambda _: page.go('2'))
@@ -41,11 +41,10 @@ def main(page: Page):
 
     )
    
-    #Container mit den Zutaten
+    # Container mit den Zutaten
     resultdata = ListView()
 
     resultcon = Container(
-        #bgcolor="red200",
         bgcolor="grey850",
         padding=10,
         margin=10,
@@ -53,7 +52,6 @@ def main(page: Page):
         animate_offset=Animation(600, curve="easeIn"),
         content=Column([
             resultdata
-
         ])
     )
 
@@ -71,7 +69,6 @@ def main(page: Page):
 
         if result:
             resultdata.controls.clear()
-            print(f"Your result {result}")  
             for x in result:
                 row_container = Row([
                     Text(f" {x['name']} ", size=20, color="white"),
@@ -90,15 +87,32 @@ def main(page: Page):
     txtsearch = TextField(label="Suche", on_change=searchnow)
 
     page.add(
-	Column([
-	Text("Search Anything",size=30,weight="bold"),
-	txtsearch,
-	resultcon
-	])
-		)
+        Column([
+            Text("Search Anything",size=30,weight="bold"),
+            txtsearch,
+            resultcon
+        ])
+    )
+
+    def extract_text(cell):
+        if hasattr(cell, 'text'):
+            return cell.text.strip().split()[0]  # Nur den ersten Teil des Textes (den Namen) extrahieren
+        else:
+            return ""
+
+
+    def check_matching_dishes():
+        available_ingredients = {extract_text(row.cells[0]) for row in speisedata.rows}  # Extrahiere alle Zutatennamen aus speisedata
+        matching_dishes_names = []
+
+        for dish in gerichte:
+            dish_ingredients = [extract_text(ingredient[0]) for ingredient in dish['zutaten']]  # Extrahiere die Zutatennamen des Gerichts
+            if all(ingredient in available_ingredients for ingredient in dish_ingredients):
+                matching_dishes_names.append(dish['name'])
+
+        return matching_dishes_names
+
     def add_to_inventory(name):
-    # Hier fügen Sie das ausgewählte Nahrungsmittel zur Speisekammer hinzu
-    # Zum Beispiel:
         speisedata.rows.append(
             flet.DataRow(
                 cells=[
@@ -108,33 +122,24 @@ def main(page: Page):
                 ]
             )
         )
-        print(f"Adding {name} to inventory")
-    # Fügen Sie das ausgewählte Nahrungsmittel zur Inventartabelle hinzu und speichern Sie es
+        matching_dishes = check_matching_dishes()
+        print("Matching dishes:", matching_dishes)
 
-
-
-
-
-
-    #Die verschiedenen Seiten, wenn man etwas designen will, dann bei controls hinzufügen. Definieren muss man die Variblen außerhalb
     def route_change(e: RouteChangeEvent) -> None:
         page.views.clear()
         page.views.append(
-
             View(
                 route='1',
                 controls=[
                     page.appbar1,
-                    Text(value='Lebensmittel', size=30),
+                    Text('Lebensmittel', size=30),
                     txtsearch,  
                     resultcon,  
                     bottom_app_bar,
                 ],
-
                 vertical_alignment=MainAxisAlignment.START,
                 horizontal_alignment=CrossAxisAlignment.CENTER,
                 spacing=26
-
             )
         )
 
@@ -144,15 +149,12 @@ def main(page: Page):
                     route='2',
                     controls=[
                         AppBar(title=Text('Eigene Rezepte'), bgcolor='black'),
-                        Text(value='Deine eigenen Rezepte', size=30),
+                        Text('Deine eigenen Rezepte', size=30),
                         ElevatedButton(text='Zurück', on_click=lambda _: page.go('1'))
-
                     ],
                     vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                     spacing=26
-
-
                 )
             )
 
@@ -162,15 +164,12 @@ def main(page: Page):
                     route='3',
                     controls=[
                         AppBar(title=Text('Entdecken'), bgcolor='black'),
-                        Text(value='Diese Rezepte könnten dir gefallen', size=30),
+                        Text('Diese Rezepte könnten dir gefallen', size=30),
                         ElevatedButton(text='Zurück', on_click=lambda _: page.go('1'))
-
                     ],
                     vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                     spacing=26
-
-
                 )
             )
 
@@ -180,15 +179,12 @@ def main(page: Page):
                     route='4',
                     controls=[
                         AppBar(title=Text('Gespeichert'), bgcolor='black'),
-                        Text(value='Deine gespeicherten Rezepte', size=30),
+                        Text('Deine gespeicherten Rezepte', size=30),
                         ElevatedButton(text='Zurück', on_click=lambda _: page.go('1'))
-
                     ],
                     vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                     spacing=26
-
-
                 )
             )
 
@@ -198,21 +194,15 @@ def main(page: Page):
                     route='5',
                     controls=[
                         AppBar(title=Text('Speisekammer'), bgcolor='black'),
-                        Text(value='Hier sind alle deine Lebensmittel', size=30),
-                        #ElevatedButton(text='Zurück', on_click=lambda _: page.go('1')),
-                            
+                        Text('Hier sind alle deine Lebensmittel', size=30),
                         speisedata
                     ],
-                      
                     vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                     spacing=26
-
-
                 )
             )
 
-                
     def view_pop(e: ViewPopEvent) -> None:
         page.views.pop()
         top_view: View = page.views[-1]
@@ -221,7 +211,6 @@ def main(page: Page):
     page.on_route_change = route_change
     page.on_view_pop = view_pop
     page.go(page.route)
-
 
 if __name__ == '__main__':
     app(target=main)
