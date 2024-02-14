@@ -230,6 +230,13 @@ data2 = flet.DataTable(
         ),
         flet.DataRow(
             cells=[
+                flet.DataCell(flet.Text("Aprikose")),
+                flet.DataCell(flet.Text("1")),
+                flet.DataCell(flet.Text("Stück")),
+            ]
+        ),
+        flet.DataRow(
+            cells=[
                 flet.DataCell(flet.Text("Backpulver")),
                 flet.DataCell(flet.Text("1")),
                 flet.DataCell(flet.Text("Pack")),
@@ -293,15 +300,15 @@ data2 = flet.DataTable(
         ),
         flet.DataRow(
             cells=[
-                flet.DataCell(flet.Text("Ei")),
-                flet.DataCell(flet.Text("1")),
-                flet.DataCell(flet.Text("Stück")),
+                flet.DataCell(flet.Text("Dattel")),
+                flet.DataCell(flet.Text("100")),
+                flet.DataCell(flet.Text("Gramm")),
             ]
         ),
         flet.DataRow(
             cells=[
-                flet.DataCell(flet.Text("Eier")),
-                flet.DataCell(flet.Text("2")),
+                flet.DataCell(flet.Text("Ei")),
+                flet.DataCell(flet.Text("1")),
                 flet.DataCell(flet.Text("Stück")),
             ]
         ),
@@ -324,6 +331,13 @@ data2 = flet.DataTable(
                 flet.DataCell(flet.Text("Essig")),
                 flet.DataCell(flet.Text("100")),
                 flet.DataCell(flet.Text("Milliliter")),
+            ]
+        ),
+        flet.DataRow(
+            cells=[
+                flet.DataCell(flet.Text("Fisch")),
+                flet.DataCell(flet.Text("100")),
+                flet.DataCell(flet.Text("Gramm")),
             ]
         ),
         flet.DataRow(

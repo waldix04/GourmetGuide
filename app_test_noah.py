@@ -84,7 +84,7 @@ def main(page: Page):
 
     resultcon.visible = False
 
-    txtsearch = TextField(label="Suche", on_change=searchnow)
+    txtsearch = TextField(label="Welche Lebensmittel hast du?", on_change=searchnow)
 
     page.add(
         Column([
