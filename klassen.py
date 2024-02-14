@@ -1,65 +1,81 @@
-import flet as ft
+import time
+import threading
+import flet
+from flet import *
+from flet import colors, icons, alignment, border
 
-class Meal(ft.UserControl):
-    def __init__(self, meal_name, meal_delete):
-        super().__init__()
-        self.meal_name = meal_name
-        self.meal_delete = meal_delete
+class Toast:
+    def __init__(
+        self,
+        page: Page,
+        icon,
+        msg_title,
+        msg_desc,
+        trigger,
+        bgcolor: str = None,
+        auto_close: int = 5,
+    ):
+        self.page = page
+        self.icon = icon
+        self.msg_title = msg_title
+        self.msg_desc = msg_desc
+        self.trigger = trigger
+        assert hasattr(
+            self.trigger, "on_click"
+        ), "Control must contain `on_click` attribute"
+        self.trigger.on_click = lambda x: threading.Thread(
+            target=self._update_visibility, daemon=True
+        ).start()
 
-    def build(self):
-        self.display_meal = ft.Checkbox(value=False, label=self.meal_name)
-        self.edit_name = ft.TextField(expand=1)
+        self.bgcolor = bgcolor
+        self.auto_close = auto_close
 
-        self.display_view = ft.Row(
-            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+    def _update_visibility(self):
+        self.stack.opacity = 1
+        self.page.update()
+        time.sleep(self.auto_close)
+        self.stack.opacity = 0
+        self.page.update()
+
+    def struct(self):
+        main_stack = Stack(expand=True)
+        main_stack.controls = [self.toast_container()]
+        self.page.add(main_stack)
+
+    def toast_container(self):
+        header = Row(
             controls=[
-                self.display_meal,
-                ft.Row(
-                    spacing=0,
-                    controls=[
-                        ft.IconButton(
-                            icon=ft.icons.CREATE_OUTLINED,
-                            tooltip="Bearbeiten",
-                            on_click=self.edit_clicked,
-                        ),
-                        ft.IconButton(
-                            ft.icons.DELETE_OUTLINE,
-                            tooltip="Löschen",
-                            on_click=self.delete_clicked,
-                        ),
-                    ],
+                Row([Icon(self.icon), Text(self.msg_title)]),
+                IconButton(
+                    icons.CLOSE_OUTLINED,
+                    on_click=lambda x: threading.Thread(
+                        target=self._close, daemon=True
+                    ).start(),
                 ),
             ],
+            alignment="spaceBetween",
         )
 
-        self.edit_view = ft.Row(
-            visible=False,
-            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-            vertical_alignment=ft.CrossAxisAlignment.CENTER,
-            controls=[
-                self.edit_name,
-                ft.IconButton(
-                    icon=ft.icons.DONE_OUTLINE_OUTLINED,
-                    icon_color=ft.colors.GREEN,
-                    tooltip="Bestätigen",
-                    on_click=self.save_clicked,
-                ),
-            ],
+        toast_content = Text(self.msg_desc)
+
+        self.container = Container(
+            content=Column([header, Divider(), toast_content]),
+            width=400,
+            bgcolor=self.bgcolor,
+            border_radius=10,
+            padding=10,
+            border=border.all(0.5, colors.BLACK12),
+            right=0,
+            bottom=0,
+            expand=True,
         )
-        return ft.Column(controls=[self.display_view, self.edit_view])
 
-    def edit_clicked(self, e):
-        self.edit_name.value = self.display_meal.label
-        self.display_view.visible = False
-        self.edit_view.visible = True
-        self.update()
-
-    def save_clicked(self, e):
-        self.display_meal.label = self.edit_name.value
-        self.display_view.visible = True
-        self.edit_view.visible = False
-        self.update()
-
-    def delete_clicked(self, e):
-        self.meal_delete(self)
+        self.stack = Stack(
+            width=self.page.window_width,
+            height=self.page.window_height,
+            controls=[self.container],
+            opacity=0,
+            animate_opacity=500,
+            expand=True,
+        )
+        return self.stack

@@ -3,15 +3,15 @@ from flet import *
 #Für die matching dishes Tabelle
 from collections import Counter
 # Unsere Datenbanken
-import daten
-from daten import data, speisedata, gerichte
+from daten import *
+from klassen import *
 
 def main(page: Page):
     page.title = "Gourmet Guide"
     page.vertical_alignment = MainAxisAlignment.CENTER
     page.theme_mode = "dark"  
 
-    page.appbar1 = flet.AppBar(
+    page_appbar1 = flet.AppBar(
         title=Text('Home'), 
         bgcolor='black',
         center_title=False,
@@ -21,8 +21,10 @@ def main(page: Page):
     )
 
     # ElevatedButtons für die untere Leiste
+    btn_home = ElevatedButton(text='Home', icon=icons.HOME, on_click=lambda _: page.go('1'))
     btn_eigene_rezepte = ElevatedButton(text='Eigene Rezepte', icon=icons.ADD, on_click=lambda _: page.go('2'))
     btn_entdecken = ElevatedButton(text='Entdecken', icon=icons.EXPLORE, on_click=lambda _: page.go('3'))
+    #Ich weiß noch nicht ob wir den Button auch noch nehmen sollten oder ned, aber Home-Button ist besser finde ich 
     btn_gespeichert = ElevatedButton(text='Gespeichert', icon=icons.BOOKMARK, on_click=lambda _: page.go('4'))
 
     bottom_app_bar = flet.BottomAppBar(
@@ -30,11 +32,11 @@ def main(page: Page):
         shape=flet.NotchShape.CIRCULAR,
         content=flet.Row(
             controls=[
+                btn_home,
+                flet.Container(expand=True),
                 btn_eigene_rezepte,
                 flet.Container(expand=True),
                 btn_entdecken,
-                flet.Container(expand=True),
-                btn_gespeichert,
             ]
         ),
     )
@@ -141,7 +143,7 @@ def main(page: Page):
             View(
                 route='1',
                 controls=[
-                    page.appbar1,
+                    page_appbar1,
                     Text('Lebensmittel', size=30),
                     txtsearch,  
                     resultcon, 
@@ -155,28 +157,63 @@ def main(page: Page):
         )
 
         if page.route == '2':
+            name_field = TextField(label="Name des Rezepts")
+            beschreibung_field = TextField(label="Beschreibung")
+            zutaten_field = TextField(label="Zutaten")
+
+            def add_recipe():
+                name = name_field.value.strip()
+                beschreibung = beschreibung_field.value.strip()
+                zutaten_text = zutaten_field.value.strip()
+                zutaten_list = [tuple(ingredient.split(',')) for ingredient in zutaten_text.split(';')]
+                gerichte.append({
+                    'name': name,
+                    'beschreibung': beschreibung,
+                    'zutaten': zutaten_list
+                })
+                print("Neues Rezept hinzugefügt:", gerichte[-1])
+
+            add_recipe_button = ElevatedButton(text="Rezept hinzufügen", on_click=lambda _: add_recipe())
+
             page.views.append(
                 View(
                     route='2',
                     controls=[
                         AppBar(title=Text('Eigene Rezepte'), bgcolor='black'),
                         Text('Deine eigenen Rezepte', size=30),
-                        ElevatedButton(text='Zurück', on_click=lambda _: page.go('1'))
+                        name_field,
+                        beschreibung_field,
+                        zutaten_field,
+                        add_recipe_button,
+                        bottom_app_bar,
                     ],
                     vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                     spacing=26
                 )
             )
-
         if page.route == '3':
+            images = flet.Row(expand=1, wrap=False, scroll="always", alignment=flet.MainAxisAlignment.END)
+            for i in range(1, 11):
+                images.controls.append(
+                    Image(
+                        src=f"pictures/img{i}.jpeg",
+                        width=150,
+                        height=150,
+                        fit=ImageFit.NONE,
+                        repeat=ImageRepeat.NO_REPEAT,
+                        border_radius=border_radius.all(10),
+                    )
+                )
             page.views.append(
                 View(
                     route='3',
                     controls=[
                         AppBar(title=Text('Entdecken'), bgcolor='black'),
                         Text('Diese Rezepte könnten dir gefallen', size=30),
-                        ElevatedButton(text='Zurück', on_click=lambda _: page.go('1'))
+                       # ElevatedButton(text='Zurück', on_click=lambda _: page.go('1')),
+                        images,
+                        bottom_app_bar,
                     ],
                     vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
@@ -190,8 +227,9 @@ def main(page: Page):
                     route='4',
                     controls=[
                         AppBar(title=Text('Gespeichert'), bgcolor='black'),
-                        Text('Deine gespeicherten Rezepte', size=30),
-                        ElevatedButton(text='Zurück', on_click=lambda _: page.go('1'))
+                        #Text('Deine gespeicherten Rezepte', size=30),
+                        ElevatedButton(text='Zurück', on_click=lambda _: page.go('1')),
+                        bottom_app_bar,
                     ],
                     vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
@@ -206,7 +244,8 @@ def main(page: Page):
                     controls=[
                         AppBar(title=Text('Speisekammer'), bgcolor='black'),
                         Text('Hier sind alle deine Lebensmittel', size=30),
-                        speisedata
+                        speisedata,
+                        bottom_app_bar,
                     ],
                     vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
