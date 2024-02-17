@@ -91,11 +91,20 @@ data = [
 
 
 #Speisekammer Tabelle
-speisedata= flet.DataTable(
+speisedata = flet.DataTable(
         columns=[
             flet.DataColumn(flet.Text("Name")),
             flet.DataColumn(flet.Text("Menge")),
             flet.DataColumn(flet.Text("Einheit")),
+        ],
+    )
+
+#Eigene Rezepte Tabelle
+rezepte = flet.DataTable(
+    columns=[
+            flet.DataColumn(flet.Text("Name")),
+            flet.DataColumn(flet.Text("Beschreibung")),
+            flet.DataColumn(flet.Text("Zutaten")),
         ],
     )
 

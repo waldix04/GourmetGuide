@@ -10,16 +10,16 @@ def main(page: Page):
     page.title = "Gourmet Guide"
     page.vertical_alignment = MainAxisAlignment.CENTER
     page.theme_mode = "dark" 
-    
+
     #Zuweisungen
-    avatar=flet.CircleAvatar(content=flet.Icon(flet.icons.ACCOUNT_CIRCLE_ROUNDED), color=flet.colors.BLACK, bgcolor=flet.colors.WHITE)
-    notification=flet.CircleAvatar(content=flet.Icon(flet.icons.NOTIFICATIONS), color=flet.colors.BLACK, bgcolor=flet.colors.WHITE)
+    avatar = CircleAvatar(content=flet.Icon(flet.icons.ACCOUNT_CIRCLE_ROUNDED), color=flet.colors.BLACK, bgcolor=flet.colors.WHITE)
+    notification = CircleAvatar(content=flet.Icon(flet.icons.NOTIFICATIONS), color=flet.colors.BLACK, bgcolor=flet.colors.WHITE)
     btn_home = ElevatedButton(text='Home', icon=icons.HOME, on_click=lambda _: page.go('1'))
-    btn_eigene_rezepte = ElevatedButton(text='Eigene Rezepte', icon=icons.ADD, on_click=lambda _: page.go('4'))
+    btn_eigene_rezepte = ElevatedButton(text='Eigene Rezepte', icon=icons.ADD, on_click=lambda _: page.go('2'))
     btn_entdecken = ElevatedButton(text='Entdecken', icon=icons.EXPLORE, on_click=lambda _: page.go('3'))
-    btn_viewrez = flet.OutlinedButton(text='Zeigen', icon=icons.ARROW_UPWARD, on_click=lambda _:page.go('4'))
-    btn_addrez = flet.OutlinedButton(text='Hinzufügen', icon=icons.ARROW_DOWNWARD, on_click=lambda _:page.go('2'))
-    btn_speise = ElevatedButton(text='Speisekammer', on_click=lambda _:page.go('5'))
+    btn_viewrez = OutlinedButton(text='Zeigen', on_click=lambda _:page.go('4'))
+    btn_addrez = OutlinedButton(text='Zurück', on_click=lambda _:page.go('2'))
+    btn_speise = OutlinedButton(text='Speisekammer', on_click=lambda _:page.go('5'))
 
     bottom_app_bar = flet.BottomAppBar(
         bgcolor=flet.colors.BLACK12,
@@ -90,22 +90,22 @@ def main(page: Page):
 
     def extract_text(cell):
         if hasattr(cell, 'text'):
-            return cell.text.strip().split()[0]  # Nur den ersten Teil des Textes (den Namen) extrahieren
+            return cell.text.strip().split()[0] 
         else:
             return ""
 
     def check_matching_dishes():
-        available_ingredients = {extract_text(row.cells[0]) for row in speisedata.rows}  # Extrahiere alle Zutatennamen aus speisedata
+        available_ingredients = {extract_text(row.cells[0]) for row in speisedata.rows}  
         matching_dishes = []
 
         for dish in gerichte:
-            dish_ingredients = [extract_text(ingredient[0]) for ingredient in dish['zutaten']]  # Extrahiere die Zutatennamen des Gerichts
+            dish_ingredients = [extract_text(ingredient[0]) for ingredient in dish['zutaten']]  
             common_ingredients = set(dish_ingredients).intersection(available_ingredients)
             if len(common_ingredients) > 0:
                 matching_dishes.append((dish['name'], len(common_ingredients)))
 
         matching_dishes.sort(key=lambda x: x[1], reverse=True)
-        matching_dishes = matching_dishes[:5]  # Begrenze auf höchstens 5 Gerichte
+        matching_dishes = matching_dishes[:5]  
 
         return [dish_name for dish_name, _ in matching_dishes]
     
@@ -160,15 +160,22 @@ def main(page: Page):
                 name = name_field.value.strip()
                 beschreibung = beschreibung_field.value.strip()
                 zutaten_text = zutaten_field.value.strip()
-                zutaten_list = [tuple(ingredient.split(',')) for ingredient in zutaten_text.split(';')]
-                gerichte.append({
-                    'name': name,
-                    'beschreibung': beschreibung,
-                    'zutaten': zutaten_list
-                })
-                print("Neues Rezept hinzugefügt:", gerichte[-1])
+                zutaten_list = [tuple(ingredient.split(',')) for ingredient in zutaten_text.split(';')]               
+                rezepte.rows.append(
+                    flet.DataRow(
+                        cells=[
+                            flet.DataCell(flet.Text(name)),
+                            flet.DataCell(flet.Text(beschreibung)),
+                            flet.DataCell(flet.Text(zutaten_list)),
+                        ]
+                    )
+                )
+                name_field.value = ''
+                beschreibung_field.value = ''
+                zutaten_field.value = ''
+                page.update()
 
-            add_recipe_button = ElevatedButton(text="Rezept hinzufügen", on_click=lambda _: add_recipe())
+            add_recipe_button = OutlinedButton(text="Rezept hinzufügen", on_click=lambda _: add_recipe())
 
             page.views.append(
                 View(
@@ -207,7 +214,6 @@ def main(page: Page):
                     controls=[
                         AppBar(title=Text('Entdecken'), bgcolor='black', actions=[avatar]),
                         Text('Diese Rezepte könnten dir gefallen', size=30),
-                       # ElevatedButton(text='Zurück', on_click=lambda _: page.go('1')),
                         images,
                         bottom_app_bar,
                     ],
@@ -225,6 +231,7 @@ def main(page: Page):
                         AppBar(title=Text('Eigene Rezepte'), bgcolor='black', actions=[avatar]),
                         Text('Deine eigenen Rezepte', size=30),      
                         btn_addrez,
+                        rezepte,
                         bottom_app_bar,
                     ],
                     vertical_alignment=MainAxisAlignment.START,
