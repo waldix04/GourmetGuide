@@ -1,6 +1,5 @@
 import time
 import threading
-import flet
 from flet import *
 from flet import colors, icons, alignment, border
 

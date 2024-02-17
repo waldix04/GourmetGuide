@@ -9,23 +9,18 @@ from klassen import *
 def main(page: Page):
     page.title = "Gourmet Guide"
     page.vertical_alignment = MainAxisAlignment.CENTER
-    page.theme_mode = "dark"  
-
-    page_appbar1 = flet.AppBar(
-        title=Text('Home'), 
-        bgcolor='black',
-        center_title=False,
-        actions=[
-            ElevatedButton(text='Speisekammer', icon=icons.FOOD_BANK, on_click=lambda _:page.go('5'))
-        ]
-    )
-
-    # ElevatedButtons für die untere Leiste
+    page.theme_mode = "dark" 
+    
+    #Zuweisungen
+    avatar = CircleAvatar(content=flet.Icon(flet.icons.ACCOUNT_CIRCLE_ROUNDED), color=flet.colors.BLACK, bgcolor=flet.colors.WHITE)
+    notification = CircleAvatar(content=flet.Icon(flet.icons.NOTIFICATIONS), color=flet.colors.BLACK, bgcolor=flet.colors.WHITE)
     btn_home = ElevatedButton(text='Home', icon=icons.HOME, on_click=lambda _: page.go('1'))
     btn_eigene_rezepte = ElevatedButton(text='Eigene Rezepte', icon=icons.ADD, on_click=lambda _: page.go('2'))
     btn_entdecken = ElevatedButton(text='Entdecken', icon=icons.EXPLORE, on_click=lambda _: page.go('3'))
-    #Ich weiß noch nicht ob wir den Button auch noch nehmen sollten oder ned, aber Home-Button ist besser finde ich 
-    btn_gespeichert = ElevatedButton(text='Gespeichert', icon=icons.BOOKMARK, on_click=lambda _: page.go('4'))
+    btn_viewrez = OutlinedButton(text='Zeigen', on_click=lambda _:page.go('4'))
+    btn_add = OutlinedButton(text='Zurück', on_click=lambda _:page.go('2'))
+    btn_speise = OutlinedButton(text='Speisekammer', on_click=lambda _:page.go('5'))
+    
 
     bottom_app_bar = flet.BottomAppBar(
         bgcolor=flet.colors.BLACK12,
@@ -84,7 +79,7 @@ def main(page: Page):
 
     resultcon.visible = False
 
-    txtsearch = TextField(label="Suche", on_change=searchnow)
+    txtsearch = TextField(label="Hinzufügen", on_change=searchnow)
 
     page.add(
         Column([
@@ -96,22 +91,22 @@ def main(page: Page):
 
     def extract_text(cell):
         if hasattr(cell, 'text'):
-            return cell.text.strip().split()[0]  # Nur den ersten Teil des Textes (den Namen) extrahieren
+            return cell.text.strip().split()[0]  
         else:
             return ""
 
     def check_matching_dishes():
-        available_ingredients = {extract_text(row.cells[0]) for row in speisedata.rows}  # Extrahiere alle Zutatennamen aus speisedata
+        available_ingredients = {extract_text(row.cells[0]) for row in speisedata.rows}  
         matching_dishes = []
 
         for dish in gerichte:
-            dish_ingredients = [extract_text(ingredient[0]) for ingredient in dish['zutaten']]  # Extrahiere die Zutatennamen des Gerichts
+            dish_ingredients = [extract_text(ingredient[0]) for ingredient in dish['zutaten']]  
             common_ingredients = set(dish_ingredients).intersection(available_ingredients)
             if len(common_ingredients) > 0:
                 matching_dishes.append((dish['name'], len(common_ingredients)))
 
         matching_dishes.sort(key=lambda x: x[1], reverse=True)
-        matching_dishes = matching_dishes[:5]  # Begrenze auf höchstens 5 Gerichte
+        matching_dishes = matching_dishes[:5] 
 
         return [dish_name for dish_name, _ in matching_dishes]
     
@@ -137,14 +132,15 @@ def main(page: Page):
         matching_dishes_table.rows = [flet.DataRow(cells=[flet.DataCell(flet.Text(name))]) for name in matching_dishes]
         print("Matching dishes:", matching_dishes)
 
+
     def route_change(e: RouteChangeEvent) -> None:
         page.views.clear()
         page.views.append(
             View(
                 route='1',
                 controls=[
-                    page_appbar1,
-                    Text('Lebensmittel', size=30),
+                    AppBar(title=Text('Home'), bgcolor='black', actions=[notification,avatar]),
+                    Text('Lebensmittel', size=30), btn_speise,
                     txtsearch,  
                     resultcon, 
                     matching_dishes_table, 
@@ -152,7 +148,7 @@ def main(page: Page):
                 ],
                 vertical_alignment=MainAxisAlignment.START,
                 horizontal_alignment=CrossAxisAlignment.CENTER,
-                spacing=26
+                spacing=25
             )
         )
 
@@ -160,6 +156,7 @@ def main(page: Page):
             name_field = TextField(label="Name des Rezepts")
             beschreibung_field = TextField(label="Beschreibung")
             zutaten_field = TextField(label="Zutaten")
+            btn_addrec = flet.OutlinedButton(text="Rezept hinzufügen", on_click=lambda _: add_recipe())
 
             def add_recipe():
                 name = name_field.value.strip()
@@ -173,23 +170,22 @@ def main(page: Page):
                 })
                 print("Neues Rezept hinzugefügt:", gerichte[-1])
 
-            add_recipe_button = ElevatedButton(text="Rezept hinzufügen", on_click=lambda _: add_recipe())
-
             page.views.append(
                 View(
                     route='2',
                     controls=[
-                        AppBar(title=Text('Eigene Rezepte'), bgcolor='black'),
+                        AppBar(title=Text('Eigene Rezepte'), bgcolor='black', actions=[avatar]),
                         Text('Deine eigenen Rezepte', size=30),
+                        btn_viewrez,
                         name_field,
                         beschreibung_field,
                         zutaten_field,
-                        add_recipe_button,
+                        btn_addrec,
                         bottom_app_bar,
                     ],
                     vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
-                    spacing=26
+                    spacing=25
                 )
             )
         if page.route == '3':
@@ -209,15 +205,14 @@ def main(page: Page):
                 View(
                     route='3',
                     controls=[
-                        AppBar(title=Text('Entdecken'), bgcolor='black'),
+                        AppBar(title=Text('Entdecken'), bgcolor='black', actions=[avatar]),
                         Text('Diese Rezepte könnten dir gefallen', size=30),
-                       # ElevatedButton(text='Zurück', on_click=lambda _: page.go('1')),
                         images,
                         bottom_app_bar,
                     ],
                     vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
-                    spacing=26
+                    spacing=25
                 )
             )
 
@@ -225,15 +220,15 @@ def main(page: Page):
             page.views.append(
                 View(
                     route='4',
-                    controls=[
-                        AppBar(title=Text('Gespeichert'), bgcolor='black'),
-                        #Text('Deine gespeicherten Rezepte', size=30),
-                        ElevatedButton(text='Zurück', on_click=lambda _: page.go('1')),
+                     controls=[
+                        AppBar(title=Text('Eigene Rezepte'), bgcolor='black', actions=[avatar]),
+                        Text('Deine eigenen Rezepte', size=30),      
+                        btn_add,
                         bottom_app_bar,
                     ],
                     vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
-                    spacing=26
+                    spacing=25
                 )
             )
 
@@ -242,14 +237,14 @@ def main(page: Page):
                 View(
                     route='5',
                     controls=[
-                        AppBar(title=Text('Speisekammer'), bgcolor='black'),
+                        AppBar(title=Text('Speisekammer'), bgcolor='black', actions=[avatar]),
                         Text('Hier sind alle deine Lebensmittel', size=30),
                         speisedata,
                         bottom_app_bar,
                     ],
                     vertical_alignment=MainAxisAlignment.START,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
-                    spacing=26
+                    spacing=25
                 )
             )
 
