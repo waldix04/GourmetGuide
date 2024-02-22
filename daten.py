@@ -9,6 +9,7 @@ data = [
     {"name": "Apfel"},
     {"name": "Avocado"},
     {"name": "Backpulver"},
+    {"name": "Basmatireis"},
     {"name": "Banane"},
     {"name": "Birne"},
     {"name": "Blumenkohl"},
@@ -27,7 +28,10 @@ data = [
     {"name": "Essig"},
     {"name": "Fisch"},
     {"name": "Feige"},
+    {"name": "Feta"},
+    {"name": "Garnelen"},
     {"name": "Gurke"},
+    {"name": "Gemüse"},
     {"name": "gehackte Nüsse"},
     {"name": "Granatapfel"},
     {"name": "Haferflocken"},
@@ -35,6 +39,7 @@ data = [
     {"name": "Hühnchen"},
     {"name": "Honig"},
     {"name": "Joghurt"},
+    {"name": "Kapern"},
     {"name": "Kartoffel"},
     {"name": "Karotten"},
     {"name": "Kichererbsen"},
@@ -43,6 +48,8 @@ data = [
     {"name": "Kiwi"},
     {"name": "Knoblauch"},
     {"name": "Kopfsalat"},
+    {"name": "Kokosmilch"},
+    {"name": "Kräuter"},
     {"name": "Lachs"},
     {"name": "Linsen"},
     {"name": "Mango"},
@@ -52,7 +59,9 @@ data = [
     {"name": "Milch"},
     {"name": "Nudeln"},
     {"name": "Olivenöl"},
+    {"name": "Olive"},
     {"name": "Orange"},
+    {"name": "Oregano"},
     {"name": "Paprika"},
     {"name": "Pfirsich"},
     {"name": "Petersilie"},
@@ -63,7 +72,7 @@ data = [
     {"name": "Rosinen"},
     {"name": "Rosmarin"},
     {"name": "Rucola"},
-    {"name": "Salat"},
+    {"name": "Salatblätter"},
     {"name": "Salz"},
     {"name": "Saitenwurst"},
     {"name": "Schinken"},
@@ -77,6 +86,7 @@ data = [
     {"name": "Spinat"},
     {"name": "Thymian"},
     {"name": "Tomate"},
+    {"name": "Tofu"},
     {"name": "Vanilleextrakt"},
     {"name": "Vanillezucker"},
     {"name": "Wasser"},
@@ -208,6 +218,79 @@ gerichte = [
 
 ]
 
+gerichte2 = flet.DataTable(
+    columns=[
+            flet.DataColumn(flet.Text("Name")),
+            flet.DataColumn(flet.Text("Beschreibung")),
+            flet.DataColumn(flet.Text("Zutaten")),
+    ],
+    rows=[
+        flet.DataRow(
+            cells=[
+                flet.DataCell(flet.Text("Spaghetti Carbonara")),
+                flet.DataCell(flet.Text("Nudeln mit Speck, Ei und Parmesan in Sahnesauce")),
+                flet.DataCell(flet.Text("Nudeln: 200g, Speck: 100g, Ei: 2 Stück, Parmesan: 50g, Sahne: 100ml")),
+            ]
+        ),
+        flet.DataRow(
+            cells=[
+                flet.DataCell(flet.Text("Gegrilltes Hähnchen")),
+                flet.DataCell(flet.Text("Saftiges Hähnchenbrustfilet vom Grill mit Gemüsebeilage")),
+                flet.DataCell(flet.Text("Hähnchenbrustfilet: 300g, Gemüse: 200g, Gewürze: nach Geschmack")),
+            ]
+        ),
+        flet.DataRow(
+            cells=[
+                flet.DataCell(flet.Text("Vegetarische Pizza")),
+                flet.DataCell(flet.Text("Pizza mit Tomatensauce, Mozzarella und verschiedenen Gemüsesorten")),
+                flet.DataCell(flet.Text("Teig: 300g, Tomatensauce: 150ml, Mozzarella: 200g, Gemüse: 100g")),
+            ]
+        ),
+        flet.DataRow(
+            cells=[
+                flet.DataCell(flet.Text("Rindersteak mit Rosmarinkartoffeln")),
+                flet.DataCell(flet.Text("Saftiges Rindersteak mit knusprigen Rosmarinkartoffeln")),
+                flet.DataCell(flet.Text("Rindersteak: 250g, Kartoffeln: 300g, Rosmarin: 1 Zweig")),
+            ]
+        ),
+        flet.DataRow(
+            cells=[
+                flet.DataCell(flet.Text("Lachsfilet mit Spinat und Zitronen-Knoblauch-Sauce")),
+                flet.DataCell(flet.Text("Gegrilltes Lachsfilet mit frischem Spinat und einer würzigen Zitronen-Knoblauch-Sauce")),
+                flet.DataCell(flet.Text("Lachsfilet: 200g, Spinat: 150g, Zitrone: 1 Stück, Knoblauch: 2 Zehen")),
+            ]
+        ),
+        flet.DataRow(
+            cells=[
+                flet.DataCell(flet.Text("Gemüsecurry mit Basmatireis")),
+                flet.DataCell(flet.Text("Leckeres Gemüsecurry mit einer würzigen Sauce, serviert mit duftendem Basmatireis")),
+                flet.DataCell(flet.Text("Gemüse: 300g, Currypaste: 2EL, Kokosmilch: 200ml, Basmatireis: 250g")),
+            ]
+        ),
+        flet.DataRow(
+            cells=[
+                flet.DataCell(flet.Text("Gefüllte Paprika mit Quinoa und Feta")),
+                flet.DataCell(flet.Text("Paprika gefüllt mit einer Mischung aus Quinoa, Feta und frischen Kräutern")),
+                flet.DataCell(flet.Text("Paprika: 4Stück, Quinoa: 150g, Feta: 100g, Kräuter: nach Geschmack")),
+            ]
+        ),
+        flet.DataRow(
+            cells=[
+                flet.DataCell(flet.Text("Vegetarische Lasagne")),
+                flet.DataCell(flet.Text("Lasagne mit einer cremigen Bechamelsauce, Tomatensauce und viel Gemüse")),
+                flet.DataCell(flet.Text("Lasagnenplatte: 250g, Bechamelsauce: 300ml, Tomatensauce: 200ml, Gemüse: 250g")),
+            ]
+        ),
+        flet.DataRow(
+            cells=[
+                flet.DataCell(flet.Text("Griechischer Salat")),
+                flet.DataCell(flet.Text("Ein klassischer griechischer Salat mit Tomaten, Gurken, Oliven, Feta und einem Dressing aus Olivenöl")),
+                flet.DataCell(flet.Text("Tomate: 200g, Gurke: 150g, Olive: 100g, Feta: 100g, Olivenöl: 2EL, Oregano: 1TL")),
+            ]
+        ),
+
+    ]
+)
 #Überlegung diese Tabelle als Lebensmittel Tabelle zu übernehmen, da wir dann nicht immer 100 Gramm machen müssten
 data2 = flet.DataTable(
     columns=[

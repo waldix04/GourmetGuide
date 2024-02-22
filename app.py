@@ -213,7 +213,7 @@ def main(page: Page):
                     route='3',
                     controls=[
                         AppBar(title=Text('Entdecken'), bgcolor='black', actions=[avatar]),
-                        Text('Diese Rezepte könnten dir gefallen', size=30),
+                        Text('Diese Gerichte könnten dir gefallen', size=30),
                         images,
                         bottom_app_bar,
                     ],
