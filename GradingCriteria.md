@@ -251,6 +251,9 @@ Mittlerweile sind wir uns einig, dass jeder von unserer Gruppe den ganzen Code v
 # Sie können existierenden Code analysieren und beurteilen. (5)
 <!-- You have critiqued another group project. Link to your critique here (another wiki page on your git) and link the project -->
 
+https://github.com/waldix04/GourmetGuide/blob/main/Review-GradingCriteria.md
+
+
 # Sie können sich selbstständig in Entwicklungsumgebungen und Technologien einarbeiten und diese zur Programmierung und Fehlerbehebung einsetzen. (10) 
 <!-- Which technology did you learn outside of the teacher given input -->
 <!-- Did you get help from someone in the classroom (get a support message here from the person who helped you) -->
