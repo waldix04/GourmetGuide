@@ -1,8 +1,5 @@
 import flet
 from flet import *
-#Für die matching dishes Tabelle
-from collections import Counter
-# Unsere Datenbanken
 from daten import *
 from klassen import *
 
@@ -11,7 +8,7 @@ def main(page: Page):
     page.vertical_alignment = MainAxisAlignment.CENTER
     page.theme_mode = "dark" 
 
-    #Zuweisungen
+
     avatar = CircleAvatar(content=flet.Icon(flet.icons.ACCOUNT_CIRCLE_ROUNDED), color=flet.colors.BLACK, bgcolor=flet.colors.WHITE)
     notification = CircleAvatar(content=flet.Icon(flet.icons.NOTIFICATIONS), color=flet.colors.BLACK, bgcolor=flet.colors.WHITE)
     btn_home = ElevatedButton(text='Home', icon=icons.HOME, on_click=lambda _: page.go('1'))
@@ -35,7 +32,6 @@ def main(page: Page):
         ),
     )
    
-    # Container mit den Zutaten
     resultdata = ListView()
 
     resultcon = Container(
@@ -45,7 +41,7 @@ def main(page: Page):
         offset=Offset(-2, 0), 
         animate_offset=Animation(600, curve="easeIn"),
         content=Column([
-            resultdata
+            resultdata,
         ])
     )
 
@@ -95,26 +91,49 @@ def main(page: Page):
             return ""
 
     def check_matching_dishes():
-        available_ingredients = {extract_text(row.cells[0]) for row in speisedata.rows}  
+        available_ingredients = {extract_text(row.cells[0]) for row in speisedata.rows}
         matching_dishes = []
 
-        for dish in gerichte:
-            dish_ingredients = [extract_text(ingredient[0]) for ingredient in dish['zutaten']]  
-            common_ingredients = set(dish_ingredients).intersection(available_ingredients)
-            if len(common_ingredients) > 0:
-                matching_dishes.append((dish['name'], len(common_ingredients)))
+        for row in gerichte2.rows:
+            dish_name = extract_text(row.cells[0])
+            dish_description = extract_text(row.cells[1])
+            dish_ingredients_text = extract_text(row.cells[2])
+            dish_ingredients_list = [ingredient.split(':') for ingredient in dish_ingredients_text.split(',')]
+            dish_ingredients = [ingredient[0].strip() for ingredient in dish_ingredients_list]
 
-        matching_dishes.sort(key=lambda x: x[1], reverse=True)
-        matching_dishes = matching_dishes[:5]  
+            print("Checking dish:", dish_name)
+            print("Ingredients:", dish_ingredients)
 
-        return [dish_name for dish_name, _ in matching_dishes]
-    
-    matching_dishes_names = check_matching_dishes()
+            found_matching_ingredient = False
+            for ingredient in dish_ingredients:
+                if ingredient in available_ingredients:
+                    found_matching_ingredient = True
+                    break  
+
+            if found_matching_ingredient:
+                matching_dishes.append((dish_name, dish_description, dish_ingredients))
+
+        return matching_dishes
+
+
+    matching_dishes = check_matching_dishes()
+    matching_dishes_rows = [
+        flet.DataRow(
+            cells=[
+                flet.DataCell(flet.Text(name)),
+                flet.DataCell(flet.Text(description)),
+                flet.DataCell(flet.Text(', '.join(ingredients)))
+            ]
+        ) for name, description, ingredients in matching_dishes
+    ]
+
     matching_dishes_table = flet.DataTable(
         columns=[
-            flet.DataColumn(flet.Text("Passende Gerichte"))
-        ],
-        rows=[flet.DataRow(cells=[flet.DataCell(flet.Text(name))]) for name in matching_dishes_names]
+            flet.DataColumn(flet.Text("Name")),
+            flet.DataColumn(flet.Text("Beschreibung")),
+            flet.DataColumn(flet.Text("Gemeinsame Zutaten")),
+    ],
+    rows=matching_dishes_rows
     )
 
     def add_to_inventory(name):
@@ -128,8 +147,19 @@ def main(page: Page):
             )
         )
         matching_dishes = check_matching_dishes()
-        matching_dishes_table.rows = [flet.DataRow(cells=[flet.DataCell(flet.Text(name))]) for name in matching_dishes]
-        print("Matching dishes:", matching_dishes)
+        matching_dishes_rows = [
+            flet.DataRow(
+                cells=[
+                    flet.DataCell(flet.Text(name)),
+                    flet.DataCell(flet.Text(description)),
+                    flet.DataCell(flet.Text(', '.join(ingredients)))
+                ]
+            ) for name, description, ingredients in matching_dishes
+        ]
+        matching_dishes_table.rows = matching_dishes_rows
+        page.update()
+
+
 
 
     def route_change(e: RouteChangeEvent) -> None:
